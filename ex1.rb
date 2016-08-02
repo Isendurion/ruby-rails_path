@@ -58,3 +58,7 @@ Vehicle.show_number_of_objects
 
 heavy = MyTruck.new('double')
 puts heavy.more_axises_than_two(4)
+
+puts MyCar.ancestors; puts ' '
+puts MyTruck.ancestors; puts ' '
+puts Vehicle.ancestors
