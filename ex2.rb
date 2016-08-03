@@ -19,4 +19,4 @@ end
 mary = Student.new('Mary', 4)
 martha = Student.new('Martha', 2)
 #puts mary.grade
-puts "Nice!" if mary.better_grade_than?(martha)
+puts "Nice! :)" if mary.better_grade_than?(martha)
