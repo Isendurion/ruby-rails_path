@@ -61,3 +61,32 @@ some_hash.each_pair do |letter, number|
   ary << Array[letter, number]
 end
 p ary
+
+
+#Add code to the following class so Motivation.new.speak returns "Go speed racer!!!"
+
+first = 'speed'
+second = 'racer'
+pr = Proc.new do
+  "Go #{first} #{second}"
+end
+class Motivation
+  def speak(pr)
+    pr.call
+  end
+end
+
+p Motivation.new.speak(pr)
+
+
+#Use method_missing to sum the arguments passed to the :add method.
+
+class Calc
+private
+  def method_missing(name, *args)
+    #args.inject{|sum, item| sum += item}
+    args.inject(&:+)
+  end
+end
+
+puts Calc.new.add(1, 2, 3, 4)
