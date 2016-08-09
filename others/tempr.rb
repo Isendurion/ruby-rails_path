@@ -1,1 +1,2 @@
-p 20120120.class
+arr = %w|this is the story of a girl|
+arr.sort{|first, second| first.length <=> second.length}
