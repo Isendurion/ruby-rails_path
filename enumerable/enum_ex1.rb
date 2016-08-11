@@ -1,19 +1,20 @@
 # Add your own usage for enumerable - map / select / find / detect / collect
 
-#map
+#map = collect
 p (1..10).map{|num| num * num}
-#collect
-p (1..10).collect{|num| num * num}
 
-#find
+students = ["Dave", "Piter", "Hope", "Joanna"]
+alumnus = students.map{|name| "dr #{name}"}
+
+#find = detect
 proc = Proc.new do
   puts 'Nothing found, sorry'
 end
 p (1..10).find(proc){|num| num+6 == 18}
-#detect
+#detect = find
 p (1..100).detect{|num| num % 3 == 0}
 
-#select
+#select = find_all
 p (1..10).select{|num| num * num}
 
 # Build your custom function for mapping / selecting / finding / detecting / collecting

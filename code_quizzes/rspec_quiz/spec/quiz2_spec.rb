@@ -70,3 +70,27 @@ describe "#mode" do
     expect(arr.mode).to eq "b"
   end
 end
+
+describe "#first_duplicate" do
+  it "returns first duplicate in an array" do
+    arr = %w|b c d c a a a|
+    expect(arr.first_duplicate).to eq "c"
+  end
+end
+
+describe "#symbolize" do
+  it "creates an array of symbols" do
+    arr = %w|b c d c a|
+    expected = [:b, :c, :d, :c, :a]
+    expect(arr.symbolize).to eq expected
+  end
+end
+
+describe "#index_of_max" do
+  it "returns index of largest array element" do
+    arr = [1, 99, 10, 104, 5]
+    expect(arr.index_of_max).to eq 3
+  end
+end
+
+

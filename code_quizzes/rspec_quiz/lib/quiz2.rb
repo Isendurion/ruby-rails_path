@@ -36,9 +36,21 @@ class Array
   end
 
   def mode
-    # result = self.each_with_object(Hash.new(0)) do |element, hash|
-    #   hash[element] += 1
-    # end
-    # result.sort_by(&:last)
+    result = self.each_with_object(Hash.new(0)) do |element, hash|
+      hash[element] += 1
+    end
+    result.sort_by(&:last).last.first
+  end
+
+  def first_duplicate
+    self.find{|item| count(item) > 1}
+  end
+
+  def symbolize
+    map(&:to_sym)
+  end
+
+  def index_of_max
+    index max
   end
 end

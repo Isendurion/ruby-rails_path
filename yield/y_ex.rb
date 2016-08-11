@@ -30,13 +30,8 @@ end
 
 class Config
   attr_accessor :name, :mail, :address
-  def initialize
-    @name = ''
-    @mail = ''
-    @address = ''
-  end
 
-  def set_vars
+  def initialize
     yield self
   end
 
@@ -51,11 +46,7 @@ end
 
 
 
-cf = Config.new
-
-cf.my_value = '1234'
-cf.set_vars do |config|
-  puts "let's change variables"
+cf = Config.new do |config|
   config.name = 'Jane'
   config.mail = 'jane@rc.com'
   config.address = 'Sesam street'
