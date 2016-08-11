@@ -35,3 +35,8 @@ h3 = {messi: 90, lewandowski: 86, kapustka: 71, fabianski: 93}
 h3.each_key {|k| puts "#{k}, "}
 h3.each_value{|v| puts "#{v}, "}
 h3.each_pair{|k, v| puts "#{k}: #{v}, "}
+
+# wyciagnac z Hasha litery ktore powtarzaja sie wiecej niz 5 razy
+
+h = {a: 10, k: 3, g: 6, b: 2}
+h.each{|k, v| puts "#{k}: #{v}" if v > 5}

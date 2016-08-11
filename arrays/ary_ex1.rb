@@ -26,20 +26,8 @@ p arr2
 # wyciągnąc ze str najczesciej powtarzajacy sie znak
 
 str = 'calculates average'
-str.gsub(' ', '').split('').each_with_object(my_hash = Hash.new(0)) do |char, h|
-  h[char] += 1
-end
-p my_hash.sort.first.first
-
-# wyciagnac z Hasha litery ktore powtarzaja sie wiecej niz 5 razy
-
-h = {a: 10, k: 3, g: 6, b: 2}
-result = []
-h.map{|k, v| result << k if v > 5}
-
-# stworzyc yield, ktory iteruje nieskonczenie i zwraca liczbe podzielna przez 11 (do zamiany z inna)
-# stworzyc klase config z dowolnymi parametrami (adres, mail itp) przekazac parametry yieldem
-# yield z tablicy do bloku i wyswietlic nazwe
+my_hash = str.split('').each_with_object(Hash.new(0)){|char, h| h[char] += 1}
+p my_hash.sort_by(&:last).reverse.first.first
 
 
 

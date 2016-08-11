@@ -8,9 +8,37 @@ class Array
   end
 
   def mean
-    self.inject do |sum, el|
-      sum += el
-      sum/self.length
+    result = self.inject {|sum, el| sum + el}
+    result / self.length.to_f
+  end
+
+  def unzip
+    numbers = []
+    letters = []
+    self.map do |num, letter|
+      numbers << num
+      letters << letter
     end
+    result = []
+    result << letters << numbers
+  end
+
+  def hashify
+    self.each_slice(2).to_a.to_h
+  end
+
+  def super_compact
+    self.delete_if{|o| o.nil? || o.empty?}
+  end
+
+  def tight_zip(ary)
+    self.zip(ary).flatten.compact
+  end
+
+  def mode
+    # result = self.each_with_object(Hash.new(0)) do |element, hash|
+    #   hash[element] += 1
+    # end
+    # result.sort_by(&:last)
   end
 end
