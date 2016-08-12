@@ -40,3 +40,13 @@ h3.each_pair{|k, v| puts "#{k}: #{v}, "}
 
 h = {a: 10, k: 3, g: 6, b: 2}
 h.each{|k, v| puts "#{k}: #{v}" if v > 5}
+
+
+nh1 = { a: 1, b: 2 }
+nh2 = { a: 3, b: 24, c: 4 }
+
+p nh2[:a].is_a?(Array)
+
+nh2.each{|k, v| nh2[k] = [v] unless nh2[k].is_a? Array}
+p nh2
+

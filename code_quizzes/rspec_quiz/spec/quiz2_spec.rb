@@ -93,4 +93,25 @@ describe "#index_of_max" do
   end
 end
 
+describe "#merge" do
+  it "converts array of hashes to a hash" do
+    arr = [
+        { a: 1, b: 2 },
+        { a: 3, b: 24, c: 4 }
+    ]
+    expected = {
+        a: [1, 3],
+        b: [2, 24],
+        c: [4]
+    }
+    expect(arr.merge).to eq expected
+  end
+end
 
+describe "#merge_overlapping_ranges" do
+  it "consolidates overlapping ranges" do
+    ranges = [(1..2), (3..6), (5..8)]
+    expected = [(1..2), (3..8)]
+    expect(ranges.merge_overlapping_ranges).to eq expected
+  end
+end

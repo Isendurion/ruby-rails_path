@@ -53,4 +53,30 @@ class Array
   def index_of_max
     index max
   end
+
+  def merge
+    result = first.merge(last){|_, ov, nv| [ov, nv]}
+    result.each{|k, v| result[k] = [v] unless result[k].is_a? Array}
+  end
+
+  def merge_overlapping_ranges
+    result = []
+    mem = []
+    self.each_with_index do |range, index|
+      if range.is_overlapping?(self[index+1])
+        range.each{|item| mem << item}
+        self[index+1].each{|item| mem << item}
+        result << Range.new(mem.uniq.first, mem.uniq.last)
+      elsif index != self.length-1
+        result << range
+      end
+    end
+    result
+  end
+end
+
+class Range
+  def is_overlapping?(r)
+    r.first <= self.last unless r.nil?
+  end
 end
