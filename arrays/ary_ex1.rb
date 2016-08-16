@@ -48,4 +48,9 @@ nope: test-test.test+alias@test-test.com.pl.
 nope: test-test.test+alias@test-test.com.pl+
 nope: test-test.test+alias@test-test.com.pl-"
 
-puts str.scan(/([^_\s\d\W]\S+\@\S+[^_\s\d\W])/)
+mail = '+-.test-test.test+alias@test-test.com.pl'
+regex = /[^\s\d\W]\S+@\S+[^\s\d\W]/
+
+# zwracac czy mail jest prawidlowy po porownaniu z regexpem
+
+p regex.match(mail).to_s == mail

@@ -1,3 +1,5 @@
+# ||= jesli false lub nil, przypisz wartosc
+
 # Using ark array (['cat', 'dog', 'pig', 'goat']),
 # create a new array in which every second element is uppercased and backwards.
 
