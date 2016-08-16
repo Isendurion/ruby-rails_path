@@ -52,7 +52,7 @@ class Array
 
   def index_of_max
     index max
-  end
+end
 
   def merge
     result = first.merge(last){|_, ov, nv| [ov, nv]}

@@ -10,9 +10,9 @@ arr = [%w(test hello world), ["example", "mem"]]
 
 puts arr.last.first
 
-#Write a program that iterates over an array and builds a new array that is the result of incrementing each value
-#in the original array by a value of 2. You should have two arrays at the end of this program,
-#The original array and the new array you've created. Print both arrays to the screen using the p method instead of puts.
+# Write a program that iterates over an array and builds a new array that is the result of incrementing each value
+# in the original array by a value of 2. You should have two arrays at the end of this program,
+# The original array and the new array you've created. Print both arrays to the screen using the p method instead of puts.
 
 arr = [1,2,3]
 
@@ -29,5 +29,23 @@ str = 'calculates average'
 my_hash = str.split('').each_with_object(Hash.new(0)){|char, h| h[char] += 1}
 p my_hash.sort_by(&:last).reverse.first.first
 
+# use inject and reduce to calculate average and max from an array
 
+arr = [1, 3, 5, 7, 9, 11, 4, 53, 26, 19, 44]
 
+puts max = arr.inject{|mem, num| mem < num ? num : mem}
+puts avr = arr.reduce(:+) / arr.length
+
+# wyciagnac z tekstu adres email skladajacy sie z wielu '.' '-' i '+'
+str = "s.kieloch@selleo.com
+test.test.test@test.etste.asdf
+test-test.test@test-test.com.pl
+test-test.test+alias@test-test.com.pl
+nope: .test-test.test+alias@test-test.com.pl
+nope: -.test-test.test+alias@test-test.com.pl
+nope: +-.test-test.test+alias@test-test.com.pl
+nope: test-test.test+alias@test-test.com.pl.
+nope: test-test.test+alias@test-test.com.pl+
+nope: test-test.test+alias@test-test.com.pl-"
+
+puts str.scan(/([^_\s\d\W]\S+\@\S+[^_\s\d\W])/)
