@@ -25,49 +25,13 @@ class Car
     @speed = 0
   end
 
-  def gear_1
-    if GEARS[:one].include?(@speed)
-      @speed = GEARS[:one].max
-      @gear = GEARS.key(0..20)
+  def set_gear(gear)
+    if GEARS[gear].include?(@speed)
+      @speed = GEARS[gear].max
+      @gear = gear
     else
-      raise IncorrectSpeedException, "Incorrect speed to switch to gear #{GEARS.key(0..20).to_s}. Adjust speed"
-    end
-  end
-
-  def gear_2
-    if GEARS[:two].include?(@speed)
-      @speed = GEARS[:two].max
-      @gear = GEARS.key(20..40)
-    else
-      raise IncorrectSpeedException, "Incorrect speed to switch to gear #{GEARS.key(20..40).to_s}. Adjust speed"
-    end
-  end
-
-  def gear_3
-    if GEARS[:three].include?(@speed)
-      @speed = GEARS[:three].max
-      @gear = GEARS.key(40..60)
-    else
-      raise IncorrectSpeedException, "Incorrect speed to switch to gear #{GEARS.key(40..60).to_s}. Adjust speed"
-    end
-  end
-
-  def gear_4
-    if GEARS[:four].include?(@speed)
-      @speed = GEARS[:four].max
-      @gear = GEARS.key(60..90)
-    else
-      raise IncorrectSpeedException, "Incorrect speed to switch to gear #{GEARS.key(60..90).to_s}. Adjust speed"
-    end
-  end
-
-  def gear_5
-    if GEARS[:five].include?(@speed)
-      @speed = GEARS[:five].max
-      @gear = GEARS.key(90..140)
-    else
-      raise IncorrectSpeedException, "Incorrect speed to switch to gear #{GEARS.key(90..140).to_s}. Adjust speed"
-    end
+      raise IncorrectSpeedException, "Incorrect speed to switch to gear #{gear}. Adjust speed"
+      end
   end
 
   def gear_neutral

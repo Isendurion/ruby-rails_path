@@ -34,141 +34,29 @@ RSpec.describe Car do
     end
   end
 
-  describe '#gear_1' do
+  describe '#set_gear' do
     context 'speed is in range' do
       it 'accelerates car to max speed in given range' do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 14
-        peugeot207.gear_1
-        expect(peugeot207.speed).to eq 20
-      end
-
-      it 'sets gear to 1' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 14
-        peugeot207.gear_1
-        expect(peugeot207.gear).to eq :one
-      end
-    end
-
-    context 'speed is not in range' do
-      it 'allows switching to the gear 1 only when the speed is in range' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 21
-        expect {
-          peugeot207.gear_1
-        }.to raise_error Car::IncorrectSpeedException, 'Incorrect speed to switch to gear one. Adjust speed'
-      end
-    end
-  end
-
-  describe '#gear_2' do
-    context 'speed is in range' do
-      it 'accelerates car to max speed in given range' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 28
-        peugeot207.gear_2
-        expect(peugeot207.speed).to eq 40
-      end
-
-      it 'sets gear to 2' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 28
-        peugeot207.gear_2
-        expect(peugeot207.gear).to eq :two
-      end
-    end
-
-    context 'speed is not in range' do
-      it 'allows switching to the gear 2 only when the speed is in range' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 12
-        expect {
-          peugeot207.gear_2
-        }.to raise_error Car::IncorrectSpeedException, 'Incorrect speed to switch to gear two. Adjust speed'
-      end
-    end
-  end
-
-  describe '#gear_3' do
-    context 'speed is in range' do
-      it 'accelerates car to max speed in given range' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 56
-        peugeot207.gear_3
-        expect(peugeot207.speed).to eq 60
-      end
-
-      it 'sets gear to 3' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 56
-        peugeot207.gear_3
-        expect(peugeot207.gear).to eq :three
-      end
-    end
-
-    context 'speed is not in range' do
-      it 'allows switching to the gear 3 only when the speed is in range' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 37
-        expect {
-          peugeot207.gear_3
-        }.to raise_error Car::IncorrectSpeedException, 'Incorrect speed to switch to gear three. Adjust speed'
-      end
-    end
-  end
-
-  describe '#gear_4' do
-    context 'speed is in range' do
-      it 'accelerates car to max speed in given range' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 69
-        peugeot207.gear_4
+        peugeot207.speed = 78
+        peugeot207.set_gear(:four)
         expect(peugeot207.speed).to eq 90
       end
 
-      it 'sets gear to 4' do
+      it 'sets gear to given gear' do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 69
-        peugeot207.gear_4
+        peugeot207.speed = 78
+        peugeot207.set_gear(:four)
         expect(peugeot207.gear).to eq :four
       end
     end
 
     context 'speed is not in range' do
-      it 'allows switching to the gear 4 only when the speed is in range' do
+      it 'allows switching to the given gear only when the speed is in range' do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 53
-        expect {
-          peugeot207.gear_4
-        }.to raise_error Car::IncorrectSpeedException, 'Incorrect speed to switch to gear four. Adjust speed'
-      end
-    end
-  end
-
-  describe '#gear_5' do
-    context 'speed is in range' do
-      it 'accelerates car to max speed in given range' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 127
-        peugeot207.gear_5
-        expect(peugeot207.speed).to eq 140
-      end
-
-      it 'sets gear to 5' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 127
-        peugeot207.gear_5
-        expect(peugeot207.gear).to eq :five
-      end
-    end
-
-    context 'speed is not in range' do
-      it 'allows switching to the gear 5 only when the speed is in range' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 85
-        expect {
-          peugeot207.gear_5
+        peugeot207.speed = 78
+        expect{
+          peugeot207.set_gear(:five)
         }.to raise_error Car::IncorrectSpeedException, 'Incorrect speed to switch to gear five. Adjust speed'
       end
     end
