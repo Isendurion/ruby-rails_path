@@ -4,10 +4,6 @@
 
 #Decorators, presenters = alias: formatters, service_objects, (pattern) ex. ruby decorations pattern
 
-#RSpec:
-# car
-
-# biegi - (1,2,3,4,5) - jaka prędkosc
 
 # bank
 
