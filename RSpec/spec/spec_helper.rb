@@ -1,1 +1,1 @@
-require_relative '../lib/car'
+require 'car'

@@ -8,4 +8,3 @@
 # bank
 
 #uzytkownik ma konto, wybiera kase, wplaca itp.
-#spec to method breaking which contains break and break release methods
