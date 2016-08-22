@@ -7,10 +7,11 @@ class Car
 
   attr_accessor :speed, :gear, :clutch, :lights
 
-  def initialize(name:, brand:, model:)
+  def initialize(name:, brand:, model:, driver: Person.new(name: 'Robert'))
     @name = name
     @brand = brand
     @model = model
+    @driver = driver
     @speed = 0
     @gear = GEARS.key(0..0)
     @clutch = false
@@ -52,12 +53,12 @@ class Car
     end
   end
 
-  def in_case_of_emergency
+  def turn_on_the_turn_lights
     @lights[:left_turn] = true
     @lights[:right_turn] = true
   end
 
-  def end_of_emergency
+  def turn_off_the_turn_lights
     @lights[:left_turn] = false
     @lights[:right_turn] = false
   end
@@ -98,7 +99,3 @@ class Car
     end
   end
 end
-
-truck = Car.new(name: 'Moja Gablota', brand: 'Jelcz', model: 'złom4003')
-f1 = Car.new(name: 'Usain Bolt', brand: 'Formula', model: '1')
-f1.show_car

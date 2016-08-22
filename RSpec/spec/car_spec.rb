@@ -1,7 +1,5 @@
 # wypadek (metoda dla Car) - wyslanie powiadomienia do firmy ubezpieczeniowej
 
-require 'spec_helper'
-
 describe Car do
   describe '.new' do
     it 'creates new car with given name, brand and model' do
@@ -78,15 +76,14 @@ describe Car do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
         peugeot207.lights = {head: true, tail: false, brake: true, left_turn: false, right_turn: true}
         peugeot207.stop_engine
-        expectations = {head: false, tail: false, brake: false, left_turn: false, right_turn: false}
-        expect(peugeot207.lights).to eq expectations
+        expect(peugeot207.lights).to eq(head: false, tail: false, brake: false, left_turn: false, right_turn: false)
       end
     end
 
     context 'it is the case of emergency' do
       it 'turns the lights off excluding emergency lights' do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.in_case_of_emergency
+        peugeot207.turn_on_the_turn_lights
         peugeot207.stop_engine
         expectations = {head: false, tail: false, brake: false, left_turn: true, right_turn: true}
         expect(peugeot207.lights).to eq expectations
@@ -115,7 +112,7 @@ describe Car do
     context 'it is the case of emergency' do
       it 'it does not turn the turn lights off' do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.in_case_of_emergency
+        peugeot207.turn_on_the_turn_lights
         expect{
           peugeot207.end_turn
         }.to raise_error Car::CaseOfEmergencyException, 'Warning! Hazard on the road. Do not turn emergency lights off!'
@@ -123,19 +120,19 @@ describe Car do
     end
   end
 
-  describe '#in case of emergency' do
+  describe '#turn_on_the_turn_lights' do
     it 'turns the emergency lights on' do
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-      peugeot207.in_case_of_emergency
+      peugeot207.turn_on_the_turn_lights
       expect(peugeot207.lights[:left_turn] && peugeot207.lights[:right_turn]).to eq true
     end
   end
 
-  describe '#end of emergency' do
+  describe '#turn_off_the_turn_lights' do
     it 'turns the emergency lights off' do
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-      peugeot207.in_case_of_emergency
-      peugeot207.end_of_emergency
+      peugeot207.turn_on_the_turn_lights
+      peugeot207.turn_off_the_turn_lights
       expect(peugeot207.lights[:left_turn] || peugeot207.lights[:right_turn]).to eq false
     end
   end
@@ -256,6 +253,26 @@ describe Car do
           peugeot207.shift_reverse_gear
         }.to raise_error Car::IncorrectSpeedException, 'Incorrect speed to reverse. Stop the car'
       end
+    end
+  end
+
+  describe '#accident_occured' do
+    context 'car driver caused an accident' do
+      context 'driver is insured' do
+        it 'sends a message to the Insurance Company' do
+          jake = Person.new(name: 'Jake')
+          peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+          seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza')
+        end
+      end
+      context 'driver is not insured' do
+        it 'sends a message only when person is insured' do
+
+        end
+      end
+    end
+    context 'Someone else caused an accident' do
+
     end
   end
 end
