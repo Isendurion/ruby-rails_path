@@ -52,18 +52,32 @@ Changes 22.08:
 2.  read Romans and the OCP article
 3.  decorators
 
-TODO:
- .rspec - check what is inside
- spec_helper.rb (command to make it: rspec --init) - check what is inside
- freeze
- new object lamp with disable method
- transsmision int 2 to CONST
- def_delegator
- pesant methods available for thewarrior 
-
-
 ----------
 
 Review 23.08:
+    > Forwardable module allows to delegate methods to object from another class using def_delegators
+      where the first parameter is an object ex. :@bed or without @ if there is method bed
+      that shows @bed object.
+      def_delegator can change 'method name' for given object
+      - person/assignement, book/product pesant/warrior examples
+      
+    > freeze: it prevents object from further modifications. Object can't be unfreezed
+      Immutability. Some objects in Ruby are default frozen;
+      from classes: Fixnum, Bignum, Float, Symbol
+      
+    > .rspec
+      could have some additional options shown and described at spec --h (help)
+      for example we can only specific spec's that contain given string
+      in whole description [describe, context, it]:
+      spec --example STRING (ex. STRING = 'speed to 0')
+     
+
+Changes 23.08:
 
 1.  names in_case_of_emergency && end_of_emergency changed
+2.  pesant/warrior classes extended
+    pesant methods available for the warrior
+3.  changed transsmision int 2 to const DEFAULT_GEARS
+4.  added private method to check if emergency lights are turned on
+5.  added tests and implemented methods accident_occured, send_message - unfinished!
+6. added id with base to Person class

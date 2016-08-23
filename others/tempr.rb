@@ -2,45 +2,19 @@
 
 # default method definition
 
-#Decorators, presenters = alias: formatters, service_objects, (pattern) ex. ruby decorations pattern
-
+# Decorators, presenters = alias: formatters, service_objects, (pattern) ex. ruby decorations pattern
 
 # bank
+# uzytkownik ma konto, wybiera kase, wplaca itp.
+num = 99
+p num.object_id
+num -= 1
+p num.object_id
+p 99.object_id
+p 98.object_id
 
-#uzytkownik ma konto, wybiera kase, wplaca itp.
+# num = Integer.new(98)
 
-p 2.4.truncate.is_a?(Integer)
-
-p 'sadsko'.truncate
-
-
-
-
-class Person
-  def name
-    'Atomek'
-  end
-
-  def age
-    99
-  end
-end
-
-class Assignement
-  def_delegator :name, :age, :person # lub @person bez dodatkowej metody person
-
-  def initialize
-    @person = Person.new
-  end
-
-  def display
-    "Task assigned to: #{name} age: #{age}"
-  end
-
-  def person
-    @person
-  end
-end
-
-p Assignement.new.display
-
+ary = []
+ary << 1
+p ary

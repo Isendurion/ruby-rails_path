@@ -24,8 +24,7 @@ describe Car do
 
     it 'creates car with lights turned off' do
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-      expectations = {head: false, tail: false, brake: false, left_turn: false, right_turn: false}
-      expect(peugeot207.lights).to eq expectations
+      expect(peugeot207.lights).to eq(head: false, tail: false, brake: false, left_turn: false, right_turn: false)
     end
   end
 
@@ -85,8 +84,7 @@ describe Car do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
         peugeot207.turn_on_the_turn_lights
         peugeot207.stop_engine
-        expectations = {head: false, tail: false, brake: false, left_turn: true, right_turn: true}
-        expect(peugeot207.lights).to eq expectations
+        expect(peugeot207.lights).to eq(head: false, tail: false, brake: false, left_turn: true, right_turn: true)
       end
     end
   end
@@ -260,19 +258,39 @@ describe Car do
     context 'car driver caused an accident' do
       context 'driver is insured' do
         it 'sends a message to the Insurance Company' do
-          jake = Person.new(name: 'Jake')
+          liberty = InsuranceCompany.new(name: 'Liberty Insurance')
+          jake = Person.new(name: 'Jake', insurance: liberty)
+          wayne = Person.new(name: 'Wayne')
           peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
-          seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza')
+          seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza', driver: wayne)
+          peugeot207.accident_occured(jake)
+          expect(jake.insurance.received_message).to eq 'Accident occured. I am guilty'
         end
       end
       context 'driver is not insured' do
         it 'sends a message only when person is insured' do
-
+          jake = Person.new(name: 'Jake')
+          wayne = Person.new(name: 'Wayne')
+          peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+          seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza', driver: wayne)
+          expect{
+            peugeot207.accident_occured(jake)
+          }.to raise_error Car::NoInsuranceError, 'You do not have an insurance. Pay yourself!'
         end
       end
     end
     context 'Someone else caused an accident' do
 
+    end
+  end
+
+  describe '#send_message' do
+    it 'sends a message to the insurance company' do
+      liberty = InsuranceCompany.new(name: 'Liberty Insurance')
+      jake = Person.new(name: 'Jake', insurance: liberty)
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+      peugeot207.send_message(jake.insurance, 'Hi. I need to repair my car')
+      expect(jake.insurance.received_message.nil?).to eq false
     end
   end
 end
