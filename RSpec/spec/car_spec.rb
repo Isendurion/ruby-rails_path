@@ -255,42 +255,51 @@ describe Car do
   end
 
   describe '#accident_occured' do
-    context 'car driver caused an accident' do
-      context 'driver is insured' do
-        it 'sends a message to the Insurance Company' do
-          liberty = InsuranceCompany.new(name: 'Liberty Insurance')
-          jake = Person.new(name: 'Jake', insurance: liberty)
-          wayne = Person.new(name: 'Wayne')
-          peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
-          seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza', driver: wayne)
-          peugeot207.accident_occured(jake)
-          expect(jake.insurance.received_message).to eq 'Accident occured. I am guilty'
-        end
-      end
-      context 'driver is not insured' do
-        it 'sends a message only when person is insured' do
-          jake = Person.new(name: 'Jake')
-          wayne = Person.new(name: 'Wayne')
-          peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
-          seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza', driver: wayne)
-          expect{
-            peugeot207.accident_occured(jake)
-          }.to raise_error Car::NoInsuranceError, 'You do not have an insurance. Pay yourself!'
-        end
+    context 'driver is insured' do
+      it 'sends a message to the Insurance Company' do
+        liberty = InsuranceCompany.new(name: 'Liberty Insurance')
+        jake = Person.new(name: 'Jake', insurance: liberty)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        peugeot207.accident_occured(jake)
+        expect(jake.received_message).to eq 'From: Liberty Insurance, to Jake: An accident occured. Do not worry we will take care'
       end
     end
-    context 'Someone else caused an accident' do
-
+    context 'driver is not insured' do
+      it 'sends a message only when person is insured' do
+        jake = Person.new(name: 'Jake')
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        expect{
+          peugeot207.accident_occured(jake)
+        }.to raise_error Car::NoInsuranceError, 'You do not have an insurance. Message sending aborted'
+      end
     end
   end
 
   describe '#send_message' do
-    it 'sends a message to the insurance company' do
-      liberty = InsuranceCompany.new(name: 'Liberty Insurance')
-      jake = Person.new(name: 'Jake', insurance: liberty)
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
-      peugeot207.send_message(jake.insurance, 'Hi. I need to repair my car')
-      expect(jake.insurance.received_message.nil?).to eq false
+    context 'keyword is provided' do
+      it 'sends a message to the recipient' do
+        liberty = InsuranceCompany.new(name: 'Liberty Insurance')
+        jake = Person.new(name: 'Jake', insurance: liberty)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        peugeot207.send_message(jake.insurance, 'repair', 'Hi. I need to repair my car')
+        expect(jake.insurance.received_message.include?('no messages received')).to eq false
+      end
+
+      it 'sends a message with a keyword' do
+        liberty = InsuranceCompany.new(name: 'Liberty Insurance')
+        jake = Person.new(name: 'Jake', insurance: liberty)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        expect(peugeot207.send_message(jake.insurance, 'repair', 'Hi. I need to repair my car')).to eq '[REPAIR]: Hi. I need to repair my car'
+      end
+    end
+
+    context 'keyword is not provided' do
+      it 'sends a message without a keyword' do
+        liberty = InsuranceCompany.new(name: 'Liberty Insurance')
+        jake = Person.new(name: 'Jake', insurance: liberty)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        expect(peugeot207.send_message(jake.insurance, 'Hi. I need to repair my car')).to eq 'Hi. I need to repair my car'
+      end
     end
   end
 end

@@ -26,6 +26,10 @@ class Assignement
   def person
     @person
   end
+
+  def title
+    "assignement title"
+  end
 end
 
 p Assignement.new.display_it
@@ -53,10 +57,13 @@ class Product
 
   def_delegators :@book, :language, :year, :author, :info
   def_delegator :@book, :title, :info
+  def_delegator :@assignement, :title
 
   def initialize
     @book = Book.new
+    @assignement = Assignement.new
   end
 end
 
 p Product.new.info
+p Product.new.title

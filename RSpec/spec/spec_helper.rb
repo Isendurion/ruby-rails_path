@@ -17,9 +17,10 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-require_relative '../lib/person.rb'
 require_relative '../lib/car.rb'
+require_relative '../lib/person.rb'
 require_relative '../lib/insurance_company.rb'
+require_relative '../lib/notification'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

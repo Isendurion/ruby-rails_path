@@ -32,7 +32,7 @@ Review 22.08:
    > x.remainder(y) means x-y*(x/y).truncate
      (truncate = to_i, to_int; is making int from float without rounding)
 
-DiR (Design is Refactoring):
+    DiR (Design is Refactoring):
    > Romans and the OCP:
         - Not only introducing new logic of functionality is called refactoring.
           For example it can change only the design of the code to raise redability and understanding.
@@ -55,21 +55,41 @@ Changes 22.08:
 ----------
 
 Review 23.08:
-    > Forwardable module allows to delegate methods to object from another class using def_delegators
-      where the first parameter is an object ex. :@bed or without @ if there is method bed
-      that shows @bed object.
-      def_delegator can change 'method name' for given object
-      - person/assignement, book/product pesant/warrior examples
+>   Forwardable module allows to delegate methods to object from another class using def_delegators
+    where the first parameter is an object ex. :@bed or without @ if there is method bed
+    that shows @bed object.
+    def_delegator can change 'method name' for given object
+    - person/assignement, book/product pesant/warrior examples
       
-    > freeze: it prevents object from further modifications. Object can't be unfreezed
-      Immutability. Some objects in Ruby are default frozen;
-      from classes: Fixnum, Bignum, Float, Symbol
+>   freeze: it prevents object from further modifications. Object can't be unfreezed
+    Immutability. Some objects in Ruby are default frozen;
+    from classes: Fixnum, Bignum, Float, Symbol
       
-    > .rspec
-      could have some additional options shown and described at spec --h (help)
-      for example we can only specific spec's that contain given string
-      in whole description [describe, context, it]:
-      spec --example STRING (ex. STRING = 'speed to 0')
+>   .rspec
+    could have some additional options shown and described at spec --h (help)
+    for example we can only specific spec's that contain given string
+    in whole description [describe, context, it]:
+    spec --example STRING (ex. STRING = 'speed to 0')
+      
+DiR (Design is Refactoring):
+>   TRUE Principle:
+    
+    Transparent
+      Everyone should know what happens when reading my code
+      - proper names of classes, methods, objects etc.
+    
+    Resonable
+      There should be a possibility to change the code with an efford
+      equivalent to complexity of a change.
+    
+    Usable
+      The code should be ready to use in other situations
+      - send_message sends given message not only when having an accident
+    
+    Exemplary
+      Our code should serve as an example for other people
+    
+    
      
 
 Changes 23.08:
@@ -79,5 +99,7 @@ Changes 23.08:
     pesant methods available for the warrior
 3.  changed transsmision int 2 to const DEFAULT_GEARS
 4.  added private method to check if emergency lights are turned on
-5.  added tests and implemented methods accident_occured, send_message - unfinished!
-6. added id with base to Person class
+5.  added tests and implemented methods accident_occured, send_message
+6.  added id and id_base to Person class
+7.  read about TRUE code with example 99 beer song
+8.  added notification class, specs for insurance and notification

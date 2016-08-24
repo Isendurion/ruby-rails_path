@@ -1,5 +1,5 @@
 class Person
-  attr_accessor :insurance
+  attr_accessor :name, :insurance, :received_message
   attr_reader :id
 
   @@id_base = []
@@ -8,6 +8,7 @@ class Person
     @id = give_id
     @name = name
     @insurance = insurance
+    @received_message = 'no messages received'
 
     @@id_base << @id
   end
@@ -20,7 +21,4 @@ class Person
   def get_uniqe_id
     @@id_base.last+1
   end
-
-  public
-
 end

@@ -106,14 +106,19 @@ class Car
     end
   end
 
-  def send_message(recipient, message)
-    recipient.received_message = message
+  def send_message(recipient, keyword = '', message)
+    if keyword == ''
+      recipient.received_message = message
+    else recipient.received_message = "[#{keyword.upcase}]: #{message}"
+    end
   end
 
   def accident_occured(guilty)
     if guilty.insurance == 'no insurance'
-      raise NoInsuranceError, 'You do not have an insurance. Pay yourself!'
-    else send_message(guilty.insurance, 'Accident occured. I am guilty')
+      raise NoInsuranceError, 'You do not have an insurance. Message sending aborted'
+    else
+      send_message(guilty.insurance, guilty.insurance.notification_keywords[:accident], 'Accident occured')
+      guilty.insurance.send_notification(guilty)
     end
   end
 end
