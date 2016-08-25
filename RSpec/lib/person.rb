@@ -8,7 +8,7 @@ class Person
     @id = give_id
     @name = name
     @insurance = insurance
-    @received_message = 'no messages received'
+    @received_message = ''
 
     @@id_base << @id
   end

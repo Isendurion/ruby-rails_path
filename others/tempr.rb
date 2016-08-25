@@ -4,5 +4,3 @@
 
 # bank
 # uzytkownik ma konto, wybiera kase, wplaca itp.
-
-p '[ACCIDENT]: 2 cars involved.'.include?('ACCIDENT')

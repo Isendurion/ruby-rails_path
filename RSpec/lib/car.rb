@@ -3,13 +3,16 @@ class Car
   ClutchNotPressedError = Class.new(StandardError)
   CaseOfEmergencyException = Class.new(StandardError)
   NoInsuranceError = Class.new(StandardError)
+  KeywordRequiredError = Class.new(StandardError)
 
   GEARS = {neutral: (0..0), one: (0..20), two: (20..40), three: (40..60), four: (60..90), five: (90..140), reverse: (0..10)}
   DEFAULT_GEARS = 2
 
-  attr_accessor :speed, :gear, :clutch, :lights
+  attr_accessor :speed, :gear, :clutch, :lights, :received_message
+  attr_reader :are_keyword_required
 
-  def initialize(name:, brand:, model:, driver: Person.new(name: 'Robert'))
+  def initialize(name:, brand:, model:, driver: Person.new(name: 'Robert'),
+                 are_keyword_required: false)
     @name = name
     @brand = brand
     @model = model
@@ -18,6 +21,8 @@ class Car
     @gear = GEARS.key(0..0)
     @clutch = false
     @lights = {head: false, tail: false, brake: false, left_turn: false, right_turn: false}
+    @received_message = ''
+    @are_keyword_required = are_keyword_required
   end
 
   private
@@ -106,19 +111,24 @@ class Car
     end
   end
 
-  def send_message(recipient, keyword = '', message)
-    if keyword == ''
-      recipient.received_message = message
-    else recipient.received_message = "[#{keyword.upcase}]: #{message}"
+  def send_notification(recipient, message, keyword = '')
+    if recipient.are_keyword_required && keyword == ''
+      raise KeywordRequiredError, 'Keyword required. Sending aborted'
+    elsif recipient.are_keyword_required && keyword != ''
+      recipient.received_message = Notification.new(self, recipient, "[#{keyword}]: #{message}")
+    else recipient.received_message = Notification.new(self, recipient, message)
     end
   end
 
-  def accident_occured(guilty)
-    if guilty.insurance == 'no insurance'
-      raise NoInsuranceError, 'You do not have an insurance. Message sending aborted'
+  def accident_occured
+    if @driver.insurance != 'no insurance'
+      recipient = @driver.insurance
+      message = 'Accident occured. Send car carrier'
+      keyword = @driver.insurance.notification_keywords[:accident]
+      send_notification(recipient, message, keyword)
+      @driver.insurance.answer_message(@driver)
     else
-      send_message(guilty.insurance, guilty.insurance.notification_keywords[:accident], 'Accident occured')
-      guilty.insurance.send_notification(guilty)
+      raise NoInsuranceError, 'You do not have an insurance. Message sending aborted'
     end
   end
 end

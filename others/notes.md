@@ -103,3 +103,13 @@ Changes 23.08:
 6.  added id and id_base to Person class
 7.  read about TRUE code with example 99 beer song
 8.  added notification class, specs for insurance and notification
+
+----25.08----
+
+Review:
+>   
+
+Changes:
+
+1.  #answer_message in InsuranceCompany now sets @recieved message to default value
+2.  redesigned whole project to send messages using Notification class

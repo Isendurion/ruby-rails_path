@@ -254,51 +254,72 @@ describe Car do
     end
   end
 
-  describe '#accident_occured' do
-    context 'driver is insured' do
-      it 'sends a message to the Insurance Company' do
+  describe '#send_notification' do
+    context 'receiver does not require keywords' do
+      it 'sends message without keywords' do
+        wayne = Person.new(name: 'Wayne')
+        jake = Person.new(name: 'Jake')
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza', driver: wayne)
+        peugeot207.send_notification(seat_ibiza, 'Do not break so unexpectedly')
+        expect(seat_ibiza.received_message).to eq Notification.new(peugeot207, seat_ibiza, 'Do not break so unexpectedly')
+      end
+
+      it 'sends message only when keywords are not required' do
+        wayne = Person.new(name: 'Wayne')
+        jake = Person.new(name: 'Jake')
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza', driver: wayne, are_keyword_required: true)
+        expect{
+          peugeot207.send_notification(seat_ibiza, 'Do not break so unexpectedly')
+        }.to raise_error Car::KeywordRequiredError, 'Keyword required. Sending aborted'
+      end
+    end
+
+    context 'receiver requires keywords' do
+      it 'sends message with keywords' do
         liberty = InsuranceCompany.new(name: 'Liberty Insurance')
         jake = Person.new(name: 'Jake', insurance: liberty)
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
-        peugeot207.accident_occured(jake)
-        expect(jake.received_message).to eq 'From: Liberty Insurance, to Jake: An accident occured. Do not worry we will take care'
+        expect(peugeot207.send_notification(liberty, 'Accident occured. Send car carrier', 'ACCIDENT')).to be_a_kind_of Notification
       end
-    end
-    context 'driver is not insured' do
-      it 'sends a message only when person is insured' do
-        jake = Person.new(name: 'Jake')
+
+      it 'sends message with accident pattern' do
+        liberty = InsuranceCompany.new(name: 'Liberty Insurance')
+        jake = Person.new(name: 'Jake', insurance: liberty)
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
-        expect{
-          peugeot207.accident_occured(jake)
-        }.to raise_error Car::NoInsuranceError, 'You do not have an insurance. Message sending aborted'
+        peugeot207.send_notification(liberty, 'Accident occured. Send car carrier', liberty.notification_keywords[:accident])
+        expect(liberty.received_message.message).to eq '[ACCIDENT]: Accident occured. Send car carrier'
+      end
+
+      it 'sends message with other pattern' do
+        liberty = InsuranceCompany.new(name: 'Liberty Insurance')
+        jake = Person.new(name: 'Jake', insurance: liberty)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        peugeot207.send_notification(liberty, 'Need new insurance', liberty.notification_keywords[:other])
+        expect(liberty.received_message.message).to eq '[OTHER]: Need new insurance'
       end
     end
   end
-
-  describe '#send_message' do
-    context 'keyword is provided' do
-      it 'sends a message to the recipient' do
+  
+  describe '#accident_occured' do
+    context 'driver is insured' do
+      it 'sends a message from Insurance Company, to the car driver' do
         liberty = InsuranceCompany.new(name: 'Liberty Insurance')
         jake = Person.new(name: 'Jake', insurance: liberty)
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
-        peugeot207.send_message(jake.insurance, 'repair', 'Hi. I need to repair my car')
-        expect(jake.insurance.received_message.include?('no messages received')).to eq false
-      end
-
-      it 'sends a message with a keyword' do
-        liberty = InsuranceCompany.new(name: 'Liberty Insurance')
-        jake = Person.new(name: 'Jake', insurance: liberty)
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
-        expect(peugeot207.send_message(jake.insurance, 'repair', 'Hi. I need to repair my car')).to eq '[REPAIR]: Hi. I need to repair my car'
+        peugeot207.accident_occured
+        expect(jake.received_message).to eq Notification.new(liberty, jake, 'Your car had an accident. Do not worry, we are taking care already')
       end
     end
 
-    context 'keyword is not provided' do
-      it 'sends a message without a keyword' do
-        liberty = InsuranceCompany.new(name: 'Liberty Insurance')
-        jake = Person.new(name: 'Jake', insurance: liberty)
+    context 'driver is not insured' do
+      it 'sends message only if driver is insured' do
+        jake = Person.new(name: 'Jake')
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
-        expect(peugeot207.send_message(jake.insurance, 'Hi. I need to repair my car')).to eq 'Hi. I need to repair my car'
+        expect{
+          peugeot207.accident_occured
+        }.to raise_error Car::NoInsuranceError, 'You do not have an insurance. Message sending aborted'
       end
     end
   end

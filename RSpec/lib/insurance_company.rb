@@ -1,25 +1,29 @@
 class InsuranceCompany
   NoMessageReceivedError = Class.new(StandardError)
 
-  NOTIFICATION_KEYWORDS = {accident: 'ACCIDENT'}
+  NOTIFICATION_KEYWORDS = {accident: 'ACCIDENT', other: 'OTHER'}
 
   attr_accessor :name, :received_message, :notification_keywords
+  attr_reader :are_keyword_required
 
-  def initialize(name:)
+  def initialize(name:, are_keyword_required: true)
     @name = name
-    @received_message = 'no messages received'
+    @received_message = ''
     @notification_keywords = NOTIFICATION_KEYWORDS
+    @are_keyword_required = are_keyword_required
   end
 
-  def send_notification(recipient)
-    if @received_message.include?(NOTIFICATION_KEYWORDS[:accident])
-      text = 'An accident occured. Do not worry we will take care'
-    elsif @received_message == 'no messages received'
+  def answer_message(recipient)
+    if @received_message == ''
       raise NoMessageReceivedError, 'No message received'
-    else text = 'Thank You for writing to us. We will response soon'
+    elsif @received_message.message.include?(@notification_keywords[:other])
+      message = 'Thank You for message. We will contact soon'
+      recipient.received_message = Notification.new(self, recipient, message)
+    elsif @received_message.message.include?(@notification_keywords[:accident])
+      message = 'Your car had an accident. Do not worry, we are taking care already'
+      recipient.received_message = Notification.new(self, recipient, message)
     end
 
-    note = Notification.new(self, recipient, text)
-    note.send_message
+    @received_message = ''
   end
 end

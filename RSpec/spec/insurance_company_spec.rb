@@ -1,35 +1,40 @@
 require 'spec_helper'
 
 describe InsuranceCompany do
-  describe '#send_notification' do
-    context "received a message from driver's car" do
-      it 'sends notification to the recipient' do
+  describe '#answer_message' do
+    context 'recieved message from the car' do
+      it 'sends answer apropriate to keyword ACCIDENT' do
         liberty = InsuranceCompany.new(name: 'Liberty Insurance')
         jake = Person.new(name: 'Jake', insurance: liberty)
-        liberty.received_message = 'Hi there. How is my insurance?'
-        text = 'Thank You for writing to us. We will response soon'
-        liberty.send_notification(jake)
-        expect(jake.received_message).to eq 'From: Liberty Insurance, to Jake: Thank You for writing to us. We will response soon'
+        liberty.received_message = Notification.new(liberty, 'Need new insurance', liberty.notification_keywords[:accident])
+        liberty.answer_message(jake)
+        expect(jake.received_message).to eq Notification.new(liberty, jake, 'Your car had an accident. Do not worry, we are taking care already')
       end
-    end
 
-    context 'accident message received' do
-      it 'it sends notification about an accident' do
+      it 'sends answer apropriate to keyword OTHER' do
         liberty = InsuranceCompany.new(name: 'Liberty Insurance')
         jake = Person.new(name: 'Jake', insurance: liberty)
-        liberty.received_message = '[ACCIDENT]: 2 cars involved. Send a rescue car'
-        liberty.send_notification(jake)
-        expect(jake.received_message).to eq 'From: Liberty Insurance, to Jake: An accident occured. Do not worry we will take care'
+        liberty.received_message = Notification.new(liberty, 'Need new insurance', liberty.notification_keywords[:other])
+        liberty.answer_message(jake)
+        expect(jake.received_message).to eq Notification.new(liberty, jake, 'Thank You for message. We will contact soon')
+      end
+
+      it 'erases received message' do
+        liberty = InsuranceCompany.new(name: 'Liberty Insurance')
+        jake = Person.new(name: 'Jake', insurance: liberty)
+        liberty.received_message = Notification.new(liberty, 'Need new insurance', liberty.notification_keywords[:other])
+        liberty.answer_message(jake)
+        expect(liberty.received_message).to eq ''
       end
     end
 
     context 'no message received' do
-      it 'sends notification only when message is recieved' do
+      it 'sends answer only if message is received' do
         liberty = InsuranceCompany.new(name: 'Liberty Insurance')
         jake = Person.new(name: 'Jake', insurance: liberty)
-        liberty.received_message = 'no messages received'
+        liberty.received_message = ''
         expect{
-          liberty.send_notification(jake)
+          liberty.answer_message(jake)
         }.to raise_error InsuranceCompany::NoMessageReceivedError, 'No message received'
       end
     end
