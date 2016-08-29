@@ -5,24 +5,20 @@ class Car
   NoInsuranceError = Class.new(StandardError)
   KeywordRequiredError = Class.new(StandardError)
 
-  GEARS = {neutral: (0..0), one: (0..20), two: (20..40), three: (40..60), four: (60..90), five: (90..140), reverse: (0..10)}
-  DEFAULT_GEARS = 2
-
   attr_accessor :speed, :gear, :clutch, :lights, :received_message
-  attr_reader :are_keyword_required
+  attr_reader :is_keyword_required, :gearbox
 
-  def initialize(name:, brand:, model:, driver: Person.new(name: 'Robert'),
-                 are_keyword_required: false)
+  def initialize(name:, brand:, model:, driver: Person.new(name: 'Robert'), is_keyword_required: false)
     @name = name
     @brand = brand
     @model = model
     @driver = driver
     @speed = 0
-    @gear = GEARS.key(0..0)
     @clutch = false
+    @gearbox = Gearbox.new(@clutch, @speed)
     @lights = {head: false, tail: false, brake: false, left_turn: false, right_turn: false}
     @received_message = ''
-    @are_keyword_required = are_keyword_required
+    @is_keyword_required = is_keyword_required
   end
 
   private
@@ -30,9 +26,13 @@ class Car
     @lights[:left_turn] && @lights[:left_turn]
   end
 
+  def send_speed_to_the_gearbox
+    gearbox.car_speed = @speed
+  end
+
   public
   def show_car
-    "Name: #{@name}\nBrand: #{@brand}\nModel: #{@model}\nTransmission: #{GEARS.size - DEFAULT_GEARS}-speed"
+    CarPresentation.new(@name, @brand, @model, @gearbox.transmission).show_car
   end
 
   def start_engine
@@ -85,38 +85,29 @@ class Car
   end
 
   def shift_gear(gear)
-    if @clutch
-      if GEARS[gear].include?(@speed)
-        @lights[:tail] = false
-        @speed = GEARS[gear].max
-        @gear = gear
-      else
-        raise IncorrectSpeedException, "Incorrect speed to shift gear #{gear}. Adjust speed"
-      end
-    else raise ClutchNotPressedError, 'Clutch is not pressed'
-    end
+    send_speed_to_the_gearbox
+    @lights[:tail] = false
+    gearbox.shift_gear(gear)
   end
 
   def shift_neutral_gear
     @lights[:tail] = false
-    @gear = GEARS.key(0..0)
+    @gearbox.gear = @gearbox.gears.key(0..0)
   end
 
   def shift_reverse_gear
     if @speed != 0
       raise IncorrectSpeedException, 'Incorrect speed to reverse. Stop the car'
     else
-      @gear = GEARS.key(0..10)
+      @gearbox.gear = @gearbox.gears.key(0..10)
       @lights[:tail] = true
     end
   end
 
   def send_notification(recipient, message, keyword = '')
-    if recipient.are_keyword_required && keyword == ''
+    if recipient.is_keyword_required && keyword == ''
       raise KeywordRequiredError, 'Keyword required. Sending aborted'
-    elsif recipient.are_keyword_required && keyword != ''
-      recipient.received_message = Notification.new(self, recipient, "[#{keyword}]: #{message}")
-    else recipient.received_message = Notification.new(self, recipient, message)
+    else recipient.received_message = Notification.new(self, recipient, "#{message}.#{keyword}")
     end
   end
 

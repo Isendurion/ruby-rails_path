@@ -1,4 +1,4 @@
-# wypadek (metoda dla Car) - wyslanie powiadomienia do firmy ubezpieczeniowej
+require 'spec_helper'
 
 describe Car do
   describe '.new' do
@@ -10,11 +10,6 @@ describe Car do
     it 'creates car with speed set to 0' do
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
       expect(peugeot207.speed).to eq 0
-    end
-
-    it 'creates car with a gear set to neutral' do
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-      expect(peugeot207.gear).to eq :neutral
     end
 
     it 'creates car with a clutch not pressed' do
@@ -29,9 +24,14 @@ describe Car do
   end
 
   describe '#show_car' do
-    it 'presents car name, brand and model' do
+    it 'presents peugeot207 name, brand and model' do
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
       expect(peugeot207.show_car).to eq "Name: Peugeot 207\nBrand: Peugeot\nModel: 207\nTransmission: 5-speed"
+    end
+
+    it 'presents seat_ibiza name, brand and model' do
+      seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza')
+      expect(seat_ibiza.show_car).to eq "Name: Seat Ibiza\nBrand: Seat\nModel: Ibiza\nTransmission: 5-speed"
     end
   end
 
@@ -161,63 +161,30 @@ describe Car do
   end
 
   describe '#shift_gear' do
-    context 'clutch is pressed' do
-      context 'speed is in range' do
-        it 'accelerates car to max speed in given range' do
-          peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-          peugeot207.clutch = true
-          peugeot207.speed = 78
-          peugeot207.shift_gear(:four)
-          expect(peugeot207.speed).to eq 90
-        end
-
-        it 'shifts gear to given gear' do
-          peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-          peugeot207.clutch = true
-          peugeot207.speed = 78
-          peugeot207.shift_gear(:four)
-          expect(peugeot207.gear).to eq :four
-        end
-
-        it 'turns the tail lights off' do
-          peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-          peugeot207.clutch = true
-          peugeot207.speed = 78
-          peugeot207.lights[:tail] = true
-          peugeot207.shift_gear(:four)
-          expect(peugeot207.lights[:tail]).to eq false
-        end
-      end
-
-      context 'speed is not in range' do
-        it 'allows to shift gear only when the speed is in range' do
-          peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-          peugeot207.clutch = true
-          peugeot207.speed = 78
-          expect{
-            peugeot207.shift_gear(:five)
-          }.to raise_error Car::IncorrectSpeedException, 'Incorrect speed to shift gear five. Adjust speed'
-        end
-      end
+    it 'turns off the tail lights' do
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
+      peugeot207.gearbox.is_clutch_pressed = true
+      peugeot207.speed = 94
+      peugeot207.lights[:tail] = true
+      peugeot207.shift_gear(90..140)
+      expect(peugeot207.lights[:tail]).to eq false
     end
 
-    context 'clutch is not pressed' do
-      it 'allows to shift gear only with clutch pressed' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.clutch = false
-        expect{
-          peugeot207.shift_gear(:two)
-        }.to raise_error Car::ClutchNotPressedError, 'Clutch is not pressed'
-      end
+    it 'sets gear to five' do
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
+      peugeot207.gearbox.is_clutch_pressed = true
+      peugeot207.speed = 94
+      peugeot207.shift_gear(90..140)
+      expect(peugeot207.gearbox.gear).to eq :five
     end
   end
 
   describe '#shift_neutral_gear' do
     it 'shifts gear to neutral position' do
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-      peugeot207.gear = :three
+      peugeot207.gearbox.gear = :three
       peugeot207.shift_neutral_gear
-      expect(peugeot207.gear).to eq :neutral
+      expect(peugeot207.gearbox.gear).to eq :neutral
     end
     it 'turns the tail lights off' do
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
@@ -232,9 +199,9 @@ describe Car do
       it 'shifts gear to reverse position' do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
         peugeot207.speed = 0
-        peugeot207.gear = :one
+        peugeot207.gearbox.gear = :one
         peugeot207.shift_reverse_gear
-        expect(peugeot207.gear).to eq :reverse
+        expect(peugeot207.gearbox.gear).to eq :reverse
       end
 
       it 'turns the tail lights on' do
@@ -262,16 +229,16 @@ describe Car do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
         seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza', driver: wayne)
         peugeot207.send_notification(seat_ibiza, 'Do not break so unexpectedly')
-        expect(seat_ibiza.received_message).to eq Notification.new(peugeot207, seat_ibiza, 'Do not break so unexpectedly')
+        expect(seat_ibiza.received_message).to eq Notification.new(peugeot207, seat_ibiza, 'Do not break so unexpectedly.')
       end
 
       it 'sends message only when keywords are not required' do
         wayne = Person.new(name: 'Wayne')
         jake = Person.new(name: 'Jake')
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
-        seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza', driver: wayne, are_keyword_required: true)
+        seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza', driver: wayne, is_keyword_required: true)
         expect{
-          peugeot207.send_notification(seat_ibiza, 'Do not break so unexpectedly')
+          peugeot207.send_notification(seat_ibiza, 'Do not break so unexpectedly.')
         }.to raise_error Car::KeywordRequiredError, 'Keyword required. Sending aborted'
       end
     end
@@ -289,7 +256,7 @@ describe Car do
         jake = Person.new(name: 'Jake', insurance: liberty)
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
         peugeot207.send_notification(liberty, 'Accident occured. Send car carrier', liberty.notification_keywords[:accident])
-        expect(liberty.received_message.message).to eq '[ACCIDENT]: Accident occured. Send car carrier'
+        expect(liberty.received_message.message).to eq 'Accident occured. Send car carrier.ACCIDENT'
       end
 
       it 'sends message with other pattern' do
@@ -297,7 +264,7 @@ describe Car do
         jake = Person.new(name: 'Jake', insurance: liberty)
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
         peugeot207.send_notification(liberty, 'Need new insurance', liberty.notification_keywords[:other])
-        expect(liberty.received_message.message).to eq '[OTHER]: Need new insurance'
+        expect(liberty.received_message.message).to eq 'Need new insurance.OTHER'
       end
     end
   end

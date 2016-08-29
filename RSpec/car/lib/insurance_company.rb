@@ -4,13 +4,13 @@ class InsuranceCompany
   NOTIFICATION_KEYWORDS = {accident: 'ACCIDENT', other: 'OTHER'}
 
   attr_accessor :name, :received_message, :notification_keywords
-  attr_reader :are_keyword_required
+  attr_reader :is_keyword_required
 
-  def initialize(name:, are_keyword_required: true)
+  def initialize(name:, is_keyword_required: true)
     @name = name
     @received_message = ''
     @notification_keywords = NOTIFICATION_KEYWORDS
-    @are_keyword_required = are_keyword_required
+    @is_keyword_required = is_keyword_required
   end
 
   def answer_message(recipient)

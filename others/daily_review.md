@@ -1,15 +1,15 @@
 Review 18.08:
 
-DiR (Design is Refactoring):
-  > OCP (Open/Closed Principle)
-    - code is open for changes but closed for modifications
-    - when adding new feature:
-      1. add new method that contains the feature
-      2. pass new tests
-      3. delete old method that need refactoring
-      4. pass tests again
-    - code is never OCP all the time. It depends on the feature I want to add
-    - code would never break when using OCP all tests should past in every next step
+  DiR (Design is Refactoring):
+>   OCP (Open/Closed Principle)
+      - code is open for changes but closed for modifications
+      - when adding new feature:
+        1. add new method that contains the feature
+        2. pass new tests
+        3. delete old method that need refactoring
+        4. pass tests again
+      - code is never OCP all the time. It depends on the feature I want to add
+      - code would never break when using OCP all tests should past in every next step
 
 ----------
 
@@ -32,7 +32,7 @@ Review 22.08:
    > x.remainder(y) means x-y*(x/y).truncate
      (truncate = to_i, to_int; is making int from float without rounding)
 
-    DiR (Design is Refactoring):
+  DiR (Design is Refactoring):
    > Romans and the OCP:
         - Not only introducing new logic of functionality is called refactoring.
           For example it can change only the design of the code to raise redability and understanding.
@@ -71,7 +71,7 @@ Review 23.08:
     in whole description [describe, context, it]:
     spec --example STRING (ex. STRING = 'speed to 0')
       
-DiR (Design is Refactoring):
+  DiR (Design is Refactoring):
 >   TRUE Principle:
     
     Transparent
@@ -107,9 +107,49 @@ Changes 23.08:
 ----25.08----
 
 Review:
->   
+>   Set class - mixin of array and hash that have unique objects.
+    can be initialized using Set.new or .to_set
+    adding exiting value do not raise error but values will not change anyway
+
+  DiR (Design is Refactoring):
+>   Robot, You Have One Job:
+
+    When I describe class and I have to use "and" or "or" words it usually means that
+    this class is not the subject to Single Responsibility Principle.
+    Those responsibilities should be divided into another classes and then used in main class.
+    Thanks to that I can faster find bugs and my code is not unnesessarly dependent on itself:
+    changing one name or a value influences on many other things
+    
+>   Organizing Data: Replace Array with Object    
+
+    
+  Reading betterspec.org:
+    - rspec matchers:
+        * respond_to (with >number, keywords< arguments)
+        * to_satisfy(description: be sth OR do sth) {block}
 
 Changes:
 
-1.  #answer_message in InsuranceCompany now sets @recieved message to default value
+1.  answer_message in InsuranceCompany now sets recieved message to default value
 2.  redesigned whole project to send messages using Notification class
+    
+----29.08----
+
+Review:
+
+>   Single Responsiblity Principle (SRP)
+
+Changes:
+
+CAR REFACTORING! :)
+
+1.  extracted show_car method to new class CarPresentation
+2.  shift_gear now shifts gear and returns max speed from given range
+3.  shift gear method extracted to the Gearbox class
+4.  GEARS and DEFAULT consts extracted the Gearbox class
+5.  IncorrectSpeedException error extracted to the Gearbox class
+6.  transmission extracted to the Gearbox class
+
+TODO:   
+- extract methods shift_neutral_gear, shift_reverse_gear from car to gearbox class
+- delete gears logic from the Car class and replace with Gearbox class
