@@ -150,6 +150,26 @@ CAR REFACTORING! :)
 5.  IncorrectSpeedException error extracted to the Gearbox class
 6.  transmission extracted to the Gearbox class
 
-TODO:   
-- extract methods shift_neutral_gear, shift_reverse_gear from car to gearbox class
-- delete gears logic from the Car class and replace with Gearbox class
+----29.08----
+
+Review:
+
+>   I have mastered a new method strip for String class.
+    It returns copy of the string with all whitespaces
+    from the beginning and the ending removed.
+    
+>   4 Simple Rules of Raindrops - next article form DiR blog:
+
+    * Tests Pass - code should be always in working state with all tests passing
+    * Express Intent - it should be clear what is matter when reading the code
+    * No Duplication of knowledge - selfexplainable
+    * Small - If I follow first three rules, the code will be small already
+   
+
+Changes:
+
+1.  Changed gearbox variables in initialize to keyword arguments for better readability
+2.  all gears logic moved to gearbox class including shift (reverse, neutral) gear methods.
+3.  rzeczy po else daj do nowej linii - DONE
+4.  made new class Gears that has got all gears and allows to make more gears when initialized
+5.  lights_switch, and turn_all_lights_off private methods added to the Car class

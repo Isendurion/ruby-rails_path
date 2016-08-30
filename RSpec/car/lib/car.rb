@@ -1,5 +1,4 @@
 class Car
-  IncorrectSpeedException = Class.new(StandardError)
   ClutchNotPressedError = Class.new(StandardError)
   CaseOfEmergencyException = Class.new(StandardError)
   NoInsuranceError = Class.new(StandardError)
@@ -15,7 +14,7 @@ class Car
     @driver = driver
     @speed = 0
     @clutch = false
-    @gearbox = Gearbox.new(@clutch, @speed)
+    @gearbox = Gearbox.new
     @lights = {head: false, tail: false, brake: false, left_turn: false, right_turn: false}
     @received_message = ''
     @is_keyword_required = is_keyword_required
@@ -26,8 +25,12 @@ class Car
     @lights[:left_turn] && @lights[:left_turn]
   end
 
-  def send_speed_to_the_gearbox
-    gearbox.car_speed = @speed
+  def lights_switch(state, *light)
+    light.each{|lamp| @lights[lamp] = state}
+  end
+
+  def turn_all_lights_off
+    lights_switch(false, :head, :tail, :brake, :left_turn, :right_turn)
   end
 
   public
@@ -38,45 +41,36 @@ class Car
   def start_engine
     if @clutch
       @speed = 0
-      @lights[:head] = true
-    else raise ClutchNotPressedError, 'Clutch is not pressed'
+      lights_switch(true, :head)
+    else
+      raise ClutchNotPressedError, 'Clutch is not pressed'
     end
   end
 
   def stop_engine
     @speed = 0
     if emergency_lights_turned_on?
-      @lights = {head: false, tail: false, brake: false, left_turn: true, right_turn: true}
+      lights_switch(false, :head, :tail, :brake)
+      lights_switch(true, :left_turn, :right_turn)
     else
-      @lights.each_key{|k| @lights[k] = false}
+      turn_all_lights_off
     end
   end
 
   def turn(direction)
-    @lights["#{direction}_turn".to_sym] = true
+    lights_switch(true, "#{direction}_turn".to_sym)
   end
 
   def end_turn
     if emergency_lights_turned_on?
       raise CaseOfEmergencyException, 'Warning! Hazard on the road. Do not turn emergency lights off!'
     else
-      @lights[:left_turn] = false
-      @lights[:right_turn] = false
+      lights_switch(false, :left_turn, :right_turn)
     end
   end
 
-  def turn_on_the_turn_lights
-    @lights[:left_turn] = true
-    @lights[:right_turn] = true
-  end
-
-  def turn_off_the_turn_lights
-    @lights[:left_turn] = false
-    @lights[:right_turn] = false
-  end
-
   def hit_the_brakes(new_speed)
-    @lights[:brake] = true
+    lights_switch(true, :brake)
     @speed = new_speed
   end
 
@@ -84,30 +78,19 @@ class Car
     @lights[:brake] = false
   end
 
-  def shift_gear(gear)
-    send_speed_to_the_gearbox
-    @lights[:tail] = false
-    gearbox.shift_gear(gear)
+  def turn_on_the_tail_lights
+    @lights[:tail] = true
   end
 
-  def shift_neutral_gear
+  def turn_off_the_tail_lights
     @lights[:tail] = false
-    @gearbox.gear = @gearbox.gears.key(0..0)
-  end
-
-  def shift_reverse_gear
-    if @speed != 0
-      raise IncorrectSpeedException, 'Incorrect speed to reverse. Stop the car'
-    else
-      @gearbox.gear = @gearbox.gears.key(0..10)
-      @lights[:tail] = true
-    end
   end
 
   def send_notification(recipient, message, keyword = '')
     if recipient.is_keyword_required && keyword == ''
       raise KeywordRequiredError, 'Keyword required. Sending aborted'
-    else recipient.received_message = Notification.new(self, recipient, "#{message}.#{keyword}")
+    else
+      recipient.received_message = Notification.new(self, recipient, "#{message}.#{keyword}")
     end
   end
 

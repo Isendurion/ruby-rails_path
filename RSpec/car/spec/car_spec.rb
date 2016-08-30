@@ -82,7 +82,8 @@ describe Car do
     context 'it is the case of emergency' do
       it 'turns the lights off excluding emergency lights' do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.turn_on_the_turn_lights
+        peugeot207.lights[:left_turn] = true
+        peugeot207.lights[:left_turn] = true
         peugeot207.stop_engine
         expect(peugeot207.lights).to eq(head: false, tail: false, brake: false, left_turn: true, right_turn: true)
       end
@@ -110,28 +111,12 @@ describe Car do
     context 'it is the case of emergency' do
       it 'it does not turn the turn lights off' do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.turn_on_the_turn_lights
+        peugeot207.lights[:left_turn] = true
+        peugeot207.lights[:right_turn] = true
         expect{
           peugeot207.end_turn
         }.to raise_error Car::CaseOfEmergencyException, 'Warning! Hazard on the road. Do not turn emergency lights off!'
       end
-    end
-  end
-
-  describe '#turn_on_the_turn_lights' do
-    it 'turns the emergency lights on' do
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-      peugeot207.turn_on_the_turn_lights
-      expect(peugeot207.lights[:left_turn] && peugeot207.lights[:right_turn]).to eq true
-    end
-  end
-
-  describe '#turn_off_the_turn_lights' do
-    it 'turns the emergency lights off' do
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-      peugeot207.turn_on_the_turn_lights
-      peugeot207.turn_off_the_turn_lights
-      expect(peugeot207.lights[:left_turn] || peugeot207.lights[:right_turn]).to eq false
     end
   end
 
@@ -160,64 +145,18 @@ describe Car do
     end
   end
 
-  describe '#shift_gear' do
+  describe '#turn_on_the_tail_lights' do
+    it 'turns on the tail lights' do
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
+      peugeot207.turn_on_the_tail_lights
+      expect(peugeot207.lights[:tail]).to eq true
+    end
+  end
+  describe '#turn_off_the_tail_lights' do
     it 'turns off the tail lights' do
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-      peugeot207.gearbox.is_clutch_pressed = true
-      peugeot207.speed = 94
-      peugeot207.lights[:tail] = true
-      peugeot207.shift_gear(90..140)
+      peugeot207.turn_off_the_tail_lights
       expect(peugeot207.lights[:tail]).to eq false
-    end
-
-    it 'sets gear to five' do
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-      peugeot207.gearbox.is_clutch_pressed = true
-      peugeot207.speed = 94
-      peugeot207.shift_gear(90..140)
-      expect(peugeot207.gearbox.gear).to eq :five
-    end
-  end
-
-  describe '#shift_neutral_gear' do
-    it 'shifts gear to neutral position' do
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-      peugeot207.gearbox.gear = :three
-      peugeot207.shift_neutral_gear
-      expect(peugeot207.gearbox.gear).to eq :neutral
-    end
-    it 'turns the tail lights off' do
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-      peugeot207.lights[:tail] = true
-      peugeot207.shift_neutral_gear
-      expect(peugeot207.lights[:tail]).to eq false
-    end
-  end
-
-  describe '#shift_reverse_gear' do
-    context 'speed is equal to 0' do
-      it 'shifts gear to reverse position' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 0
-        peugeot207.gearbox.gear = :one
-        peugeot207.shift_reverse_gear
-        expect(peugeot207.gearbox.gear).to eq :reverse
-      end
-
-      it 'turns the tail lights on' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.shift_reverse_gear
-        expect(peugeot207.lights[:tail]).to eq true
-      end
-    end
-    context 'speed is higher than 0' do
-      it 'allows to shift reverse gear only when the car is standing' do
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-        peugeot207.speed = 12
-        expect{
-          peugeot207.shift_reverse_gear
-        }.to raise_error Car::IncorrectSpeedException, 'Incorrect speed to reverse. Stop the car'
-      end
     end
   end
 
