@@ -173,3 +173,14 @@ Changes:
 3.  rzeczy po else daj do nowej linii - DONE
 4.  made new class Gears that has got all gears and allows to make more gears when initialized
 5.  lights_switch, and turn_all_lights_off private methods added to the Car class
+
+----29.08----
+
+Changes:
+
+1.  lights_switch(state, *light) -> renamed light to lights
+2.  lights_switch(..) -> changed the order of arguments
+3.  lights_switch -> switch_lights renamed
+4.  turn_all_lights_off renamed to turn_all_lights_off!
+5.  changed gears from class to OpenStruct object
+6.  keyword arguments added to the shift_gear method

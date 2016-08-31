@@ -3,15 +3,20 @@ class Gearbox
   IncorrectSpeedException = Class.new(StandardError)
 
   attr_accessor :car_speed, :is_clutch_pressed, :gear
-  attr_reader :gears, :transmission
+  attr_reader :gears
 
-  def initialize(gears: Gears.new)
+  def initialize(gears: OpenStruct.new(neutral: 0,
+                                       reverse: 0..10,
+                                       one: 0...20,
+                                       two: 20...40,
+                                       three: 40...60,
+                                       four: 60...90,
+                                       five: 90...140))
     @gears = gears
     @gear = @gears.neutral
-    @transmission = @gears.number_of_gears - @gears.number_of_default_gears
   end
 
-  def shift_gear(gear_range, clutch_pressed, speed)
+  def shift_gear(gear_range:, clutch_pressed:, speed:)
     if clutch_pressed
       if gear_range.include?(speed)
         @gear = gear_range

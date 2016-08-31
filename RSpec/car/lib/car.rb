@@ -25,23 +25,27 @@ class Car
     @lights[:left_turn] && @lights[:left_turn]
   end
 
-  def lights_switch(state, *light)
-    light.each{|lamp| @lights[lamp] = state}
+  def switch_lights(*lights, state)
+    lights.each{|lamp| @lights[lamp] = state}
   end
 
-  def turn_all_lights_off
-    lights_switch(false, :head, :tail, :brake, :left_turn, :right_turn)
+  def turn_all_lights_off!
+    switch_lights(:head, :tail, :brake, :left_turn, :right_turn, false)
   end
 
   public
   def show_car
-    CarPresentation.new(@name, @brand, @model, @gearbox.transmission).show_car
+    default_gears_quantity = 2
+    all_gears_quantity = @gearbox.gears.to_h.size
+    transmission = all_gears_quantity - default_gears_quantity
+
+    CarPresentation.new(@name, @brand, @model, transmission).show_car
   end
 
   def start_engine
     if @clutch
       @speed = 0
-      lights_switch(true, :head)
+      switch_lights(:head, true)
     else
       raise ClutchNotPressedError, 'Clutch is not pressed'
     end
@@ -50,27 +54,27 @@ class Car
   def stop_engine
     @speed = 0
     if emergency_lights_turned_on?
-      lights_switch(false, :head, :tail, :brake)
-      lights_switch(true, :left_turn, :right_turn)
+      switch_lights(:head, :tail, :brake, false)
+      switch_lights(:left_turn, :right_turn, true)
     else
-      turn_all_lights_off
+      turn_all_lights_off!
     end
   end
 
   def turn(direction)
-    lights_switch(true, "#{direction}_turn".to_sym)
+    switch_lights("#{direction}_turn".to_sym, true)
   end
 
   def end_turn
     if emergency_lights_turned_on?
       raise CaseOfEmergencyException, 'Warning! Hazard on the road. Do not turn emergency lights off!'
     else
-      lights_switch(false, :left_turn, :right_turn)
+      switch_lights(:left_turn, :right_turn, false)
     end
   end
 
   def hit_the_brakes(new_speed)
-    lights_switch(true, :brake)
+    switch_lights(:brake, true)
     @speed = new_speed
   end
 

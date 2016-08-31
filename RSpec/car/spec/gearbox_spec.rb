@@ -7,17 +7,17 @@ describe Gearbox do
       context 'speed is in range' do
         it 'returns max speed in 60...90 range' do
           gearbox = Gearbox.new
-          expect(gearbox.shift_gear(60...90, true, 78)).to eq 89
+          expect(gearbox.shift_gear(gear_range: 60...90, clutch_pressed: true, speed: 78)).to eq 89
         end
 
         it 'returns to max speed in 20...40 range' do
           gearbox = Gearbox.new
-          expect(gearbox.shift_gear(20...40, true, 23)).to eq 39
+          expect(gearbox.shift_gear(gear_range: 20...40, clutch_pressed: true, speed: 23)).to eq 39
         end
 
         it 'shifts gear to gear four' do
           gearbox = Gearbox.new
-          gearbox.shift_gear(gearbox.gears.four, true, 67)
+          gearbox.shift_gear(gear_range: gearbox.gears.four, clutch_pressed: true, speed: 78)
           expect(gearbox.gear).to eq 60...90
         end
       end
@@ -26,7 +26,7 @@ describe Gearbox do
         it 'allows shifting gear to four only when the speed is in range' do
           gearbox = Gearbox.new
           expect{
-            gearbox.shift_gear(gearbox.gears.four, true, 45)
+            gearbox.shift_gear(gear_range: gearbox.gears.four, clutch_pressed: true, speed: 45)
           }.to raise_error Gearbox::IncorrectSpeedException, 'Incorrect speed to shift this gear. Adjust speed'
         end
       end
@@ -36,7 +36,7 @@ describe Gearbox do
       it 'allows to shift gear only with clutch pressed' do
         gearbox = Gearbox.new
         expect{
-          gearbox.shift_gear(gearbox.gears.four, false, 67)
+          gearbox.shift_gear(gear_range: gearbox.gears.four, clutch_pressed: false, speed: 67)
         }.to raise_error Car::ClutchNotPressedError, 'Clutch is not pressed'
       end
     end

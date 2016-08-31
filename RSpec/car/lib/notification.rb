@@ -1,2 +1,1 @@
-Notification = Struct.new(:sender, :recipient, :message) do
-end
+Notification = Struct.new(:sender, :recipient, :message)
