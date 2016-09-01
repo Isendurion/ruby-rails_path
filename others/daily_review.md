@@ -174,7 +174,7 @@ Changes:
 4.  made new class Gears that has got all gears and allows to make more gears when initialized
 5.  lights_switch, and turn_all_lights_off private methods added to the Car class
 
-----29.08----
+----31.08----
 
 Changes:
 
@@ -184,3 +184,21 @@ Changes:
 4.  turn_all_lights_off renamed to turn_all_lights_off!
 5.  changed gears from class to OpenStruct object
 6.  keyword arguments added to the shift_gear method
+
+----01.09----
+
+Changes:
+
+1.  switch_lights -> gets second argument as a keyword argument
+2.  deleted show_car from Car class
+    replaced CarPresentation class with Present module and
+    included it to the Car class
+3.  added transmission variable to the Gearbox class
+    added set_transmission method to the Gearbox class
+    added private method set_number_of_gears to the Gearbox class
+
+TODO:
+
+1.  usuń public z klas
+2.  turn_on_the lamps - logic for spec doubled - stubbing!
+3.  move lights logic to the Lights class

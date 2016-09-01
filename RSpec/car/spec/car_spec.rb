@@ -23,18 +23,6 @@ describe Car do
     end
   end
 
-  describe '#show_car' do
-    it 'presents peugeot207 name, brand and model' do
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207')
-      expect(peugeot207.show_car).to eq "Name: Peugeot 207\nBrand: Peugeot\nModel: 207\nTransmission: 5-speed"
-    end
-
-    it 'presents seat_ibiza name, brand and model' do
-      seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza')
-      expect(seat_ibiza.show_car).to eq "Name: Seat Ibiza\nBrand: Seat\nModel: Ibiza\nTransmission: 5-speed"
-    end
-  end
-
   describe '#start_engine' do
     let(:peugeot207) { Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207') }
 
@@ -48,7 +36,7 @@ describe Car do
 
       it 'turns head lights on' do
         peugeot207.start_engine
-        expect(peugeot207.lights[:head]).to eq true
+        expect(peugeot207.llights.head.is_turned_on).to eq true
       end
     end
 

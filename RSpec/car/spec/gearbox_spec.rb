@@ -2,6 +2,14 @@ require 'spec_helper'
 
 describe Gearbox do
 
+  describe '#set_transmission' do
+    it 'sets transmission equal to the number of gears' do
+      gearbox = Gearbox.new
+      gearbox.set_transmission
+      expect(gearbox.transmission).to eq 5
+    end
+  end
+
   describe '#shift_gear' do
     context 'clutch is pressed' do
       context 'speed is in range' do
@@ -49,22 +57,22 @@ describe Gearbox do
       expect(gearbox.gear).to eq 0
     end
   end
-end
 
-describe '#shift_reverse_gear' do
-  context 'speed is equal to 0' do
-    it 'shifts gear to reverse position' do
-      gearbox = Gearbox.new
-      gearbox.shift_reverse_gear(0)
-      expect(gearbox.gear).to eq 0..10
+  describe '#shift_reverse_gear' do
+    context 'speed is equal to 0' do
+      it 'shifts gear to reverse position' do
+        gearbox = Gearbox.new
+        gearbox.shift_reverse_gear(0)
+        expect(gearbox.gear).to eq 0..10
+      end
     end
-  end
-  context 'speed is higher than 0' do
-    it 'allows to shift reverse gear only when the car speed is equal 0' do
-      gearbox = Gearbox.new
-      expect{
-        gearbox.shift_reverse_gear(98)
-      }.to raise_error Gearbox::IncorrectSpeedException, 'Incorrect speed to reverse. Stop the car first'
+    context 'speed is higher than 0' do
+      it 'allows to shift reverse gear only when the car speed is equal 0' do
+        gearbox = Gearbox.new
+        expect{
+          gearbox.shift_reverse_gear(98)
+        }.to raise_error Gearbox::IncorrectSpeedException, 'Incorrect speed to reverse. Stop the car first'
+      end
     end
   end
 end
