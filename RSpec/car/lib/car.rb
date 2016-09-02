@@ -11,11 +11,12 @@ class Car
   CaseOfEmergencyException = Class.new(StandardError)
   NoInsuranceError = Class.new(StandardError)
   KeywordRequiredError = Class.new(StandardError)
+  WrongDirectionError = Class.new(StandardError)
 
-  attr_accessor :speed, :gear, :clutch, :lights, :llights, :received_message, :name, :brand, :model
-  attr_reader :is_keyword_required, :gearbox
+  attr_accessor :speed, :gear, :clutch, :lights, :received_message, :name, :brand, :model, :gearbox
+  attr_reader :is_keyword_required
 
-  def initialize(name:, brand:, model:, driver: Person.new(name: 'Robert'), is_keyword_required: false)
+  def initialize(name:, brand:, model:, driver:, is_keyword_required: false)
     @name = name
     @brand = brand
     @model = model
@@ -23,30 +24,15 @@ class Car
     @speed = 0
     @clutch = false
     @gearbox = Gearbox.new
-    @lights = {head: false, tail: false, brake: false, left_turn: false, right_turn: false}
-    @llights = Lights.new
+    @lights = Lights.new
     @received_message = ''
     @is_keyword_required = is_keyword_required
   end
 
-  private
-  def emergency_lights_turned_on?
-    @lights[:left_turn] && @lights[:left_turn]
-  end
-
-  def switch_lights(*lights, are_turned_on:)
-    lights.each{|lamp| @lights[lamp] = are_turned_on}
-  end
-
-  def turn_all_lights_off!
-    switch_lights(:head, :tail, :brake, :left_turn, :right_turn, are_turned_on: false)
-  end
-
-  public
   def start_engine
     if @clutch
       @speed = 0
-      @llights.turn_on_the_lamps(@llights.head)
+      @lights.change_lamps_state(@lights.head, state: true)
     else
       raise ClutchNotPressedError, 'Clutch is not pressed'
     end
@@ -54,41 +40,39 @@ class Car
 
   def stop_engine
     @speed = 0
-    if emergency_lights_turned_on?
-      switch_lights(:head, :tail, :brake, are_turned_on: false)
-      switch_lights(:left_turn, :right_turn, are_turned_on: true)
+    if @lights.emergency_lights_turned_on?
+      @lights.change_lamps_state(@lights.head, @lights.tail, @lights.brake, state: false)
+      @lights.change_lamps_state(@lights.left_turn, @lights.right_turn, state: true)
     else
-      turn_all_lights_off!
+      @lights.change_lamps_state(:all, state: false)
     end
   end
 
   def turn(direction)
-    switch_lights("#{direction}_turn".to_sym, are_turned_on: true)
+    if "#{direction}_turn" == @lights.left_turn.name
+      @lights.change_lamps_state(@lights.left_turn, state: true)
+    elsif "#{direction}_turn" == @lights.right_turn.name
+      @lights.change_lamps_state(@lights.right_turn, state: true)
+    else
+      raise WrongDirectionError, 'You can turn left or right only!'
+    end
   end
 
   def end_turn
-    if emergency_lights_turned_on?
+    if @lights.emergency_lights_turned_on?
       raise CaseOfEmergencyException, 'Warning! Hazard on the road. Do not turn emergency lights off!'
     else
-      switch_lights(:left_turn, :right_turn, are_turned_on: false)
+      @lights.change_lamps_state(@lights.left_turn, @lights.right_turn, state: false)
     end
   end
 
   def hit_the_brakes(new_speed)
-    switch_lights(:brake, are_turned_on: true)
+    @lights.change_lamps_state(@lights.brake, state: true)
     @speed = new_speed
   end
 
   def release_brakes
-    @lights[:brake] = false
-  end
-
-  def turn_on_the_tail_lights
-    @lights[:tail] = true
-  end
-
-  def turn_off_the_tail_lights
-    @lights[:tail] = false
+    @lights.brake.is_turned_on = false
   end
 
   def send_notification(recipient, message, keyword = '')
@@ -111,4 +95,3 @@ class Car
     end
   end
 end
-

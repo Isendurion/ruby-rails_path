@@ -15,16 +15,23 @@ class Lights
     @right_turn = right_turn
   end
 
-  def turn_on_the_lamps(*lamps)
-    lamps.each{|lamp| lamp.is_turned_on = true}
+  def show_lamps_state
+    lamps_state = []
+    self.instance_variables.each{|lamp| lamps_state << self.instance_variable_get(lamp).is_turned_on}
+    lamps_state
   end
 
-  def turn_off_the_lamps(*lamps)
-    lamps.each{|lamp| lamp.is_turned_on = false}
+  def change_lamps_state(*lamps, state:)
+    if lamps == [:all]
+      self.instance_variables.each do |lamp|
+        lamps.delete(:all)
+        lamps << self.instance_variable_get(lamp)
+      end
+    end
+    lamps.each{|lamp| lamp.is_turned_on = state}
   end
 
   def emergency_lights_turned_on?
     @left_turn.is_turned_on && @right_turn.is_turned_on
   end
 end
-

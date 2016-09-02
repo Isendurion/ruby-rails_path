@@ -1,37 +1,20 @@
 require 'spec_helper'
 
 describe Lights do
-  describe '#turn_on_the lamps'do
-    it 'turns on head and brake lamps' do
+
+  describe '#change_lamps_state' do
+    it 'turns all lamps on,
+        when :all given as a parameter' do
       lights = Lights.new
-      lights.turn_on_the_lamps(lights.head, lights.brake)
-      expect(lights.head.is_turned_on).to eq true
+      lights.change_lamps_state(:all, state: true)
+      expect(lights.show_lamps_state.all?{|state| state == true}).to eq true
+    end
+
+    it 'turns specific lamps off' do
+      lights = Lights.new
+      lights.change_lamps_state(lights.tail, lights.brake, state: true)
+      expect(lights.tail.is_turned_on).to eq true
       expect(lights.brake.is_turned_on).to eq true
-    end
-
-    it 'turns on turns and brake lamps' do
-      lights = Lights.new
-      lights.turn_on_the_lamps(lights.left_turn, lights.right_turn, lights.brake)
-      expect(lights.right_turn.is_turned_on).to eq true
-      expect(lights.left_turn.is_turned_on).to eq true
-      expect(lights.brake.is_turned_on).to eq true
-    end
-  end
-
-  describe '#turn_off_the lamps'do
-    it 'turns off head and brake lamps' do
-      lights = Lights.new
-      lights.turn_off_the_lamps(lights.head, lights.brake)
-      expect(lights.head.is_turned_on).to eq false
-      expect(lights.brake.is_turned_on).to eq false
-    end
-
-    it 'turns off turns and brake lamps' do
-      lights = Lights.new
-      lights.turn_off_the_lamps(lights.left_turn, lights.right_turn, lights.brake)
-      expect(lights.right_turn.is_turned_on).to eq false
-      expect(lights.left_turn.is_turned_on).to eq false
-      expect(lights.brake.is_turned_on).to eq false
     end
   end
 

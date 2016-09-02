@@ -3,8 +3,7 @@ class Gearbox
 
   IncorrectSpeedException = Class.new(StandardError)
 
-  attr_accessor :car_speed, :is_clutch_pressed, :gear
-  attr_reader :gears, :transmission
+  attr_accessor :gear, :transmission, :gears
 
   def initialize(gears: OpenStruct.new(neutral: 0,
                                        reverse: 0..10,
@@ -17,12 +16,6 @@ class Gearbox
     @gear = @gears.neutral
   end
 
-  private
-  def set_number_of_gears
-    @number_of_gears = gears.to_h.size
-  end
-
-  public
   def set_transmission
     set_number_of_gears
     @transmission = @number_of_gears - NUMBER_OF_DEFAULT_GEARS
@@ -49,5 +42,10 @@ class Gearbox
     else
       raise IncorrectSpeedException, 'Incorrect speed to reverse. Stop the car first'
     end
+  end
+
+  private
+  def set_number_of_gears
+    @number_of_gears = gears.to_h.size
   end
 end

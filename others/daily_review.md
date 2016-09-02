@@ -197,8 +197,19 @@ Changes:
     added set_transmission method to the Gearbox class
     added private method set_number_of_gears to the Gearbox class
 
+----02.09----
+
+Changes:
+
+1.  public removed from classes
+2.  turn_on/off_the_lamps method changed to change_lamps_state
+3.  all lights logic moved to the lights class
+4.  deleted default driver from Car class
+5.  added spec to raise error if user gives sth else
+    than 'left', 'right' in turn method
+
 TODO:
 
-1.  usuń public z klas
-2.  turn_on_the lamps - logic for spec doubled - stubbing!
-3.  move lights logic to the Lights class
+1.  turn_on_the lamps - logic for spec doubled - stubbing!
+
+
