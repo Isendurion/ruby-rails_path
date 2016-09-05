@@ -208,8 +208,32 @@ Changes:
 5.  added spec to raise error if user gives sth else
     than 'left', 'right' in turn method
 
+----02.09----
+
+Changes:
+
+1.  'turns all lamps on, when :all given as a parameter' - description in one line
+2.  keyword state changed to: should_be_turned_on
+3.  removed 'jake ='
+4.  added a spec to #show_lamps_state method
+5.  changed each -> map for show_lamps_state method
+6.  dodaj metodę, która zmieni stan obiektu lamp w klasie Lampy - gotowe!
+7.  usuń wszystkie @, gdzie mamy zdefiniowane attr_*, np.: @lights - ok!
+
 TODO:
 
 1.  turn_on_the lamps - logic for spec doubled - stubbing!
+
+2.  peugeot207.lights.head.is_turned_on = true -> takie wycieczki po obiektach są nazywane "train wrecks" ->
+    przemodeluj to tak, aby odwołać się maksymalnie do pierwszego obiektu dostępnego dla peugeot np:
+    peugeot207.head_light.turn_off! - możesz użyć delegacji, metod, które ukryją takie wycieczki
+
+3.  expect(peugeot207.lights.show_lamps_state.all?{|state| state == false}).to eq true ->
+    sprawdź tylko czy są wysyłane odpowiednie metody do obiektu @lights
+
+4.  change_lamps_state -> zmień logike, aby była bez magicznych "instance_variables" :D
+
+5.  number_of_gears = gears.to_h.size -> mógłbyś dodać takie property w klasie Gears,
+    która zwróci Ci liczbę gears, bez konwertowania tego do hasha i sprawdzania długości
 
 

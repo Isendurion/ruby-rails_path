@@ -13,7 +13,7 @@ class Car
   KeywordRequiredError = Class.new(StandardError)
   WrongDirectionError = Class.new(StandardError)
 
-  attr_accessor :speed, :gear, :clutch, :lights, :received_message, :name, :brand, :model, :gearbox
+  attr_accessor :speed, :gear, :clutch, :lights, :received_message, :name, :brand, :model, :gearbox, :driver
   attr_reader :is_keyword_required
 
   def initialize(name:, brand:, model:, driver:, is_keyword_required: false)
@@ -32,7 +32,7 @@ class Car
   def start_engine
     if @clutch
       @speed = 0
-      @lights.change_lamps_state(@lights.head, state: true)
+      @lights.head.change_lamp_state
     else
       raise ClutchNotPressedError, 'Clutch is not pressed'
     end
@@ -41,18 +41,18 @@ class Car
   def stop_engine
     @speed = 0
     if @lights.emergency_lights_turned_on?
-      @lights.change_lamps_state(@lights.head, @lights.tail, @lights.brake, state: false)
-      @lights.change_lamps_state(@lights.left_turn, @lights.right_turn, state: true)
+      @lights.change_lamps_state(lights.head, lights.tail, lights.brake, should_be_turned_on: false)
+      @lights.change_lamps_state(lights.left_turn, lights.right_turn, should_be_turned_on: true)
     else
-      @lights.change_lamps_state(:all, state: false)
+      @lights.change_lamps_state(:all, should_be_turned_on: false)
     end
   end
 
   def turn(direction)
     if "#{direction}_turn" == @lights.left_turn.name
-      @lights.change_lamps_state(@lights.left_turn, state: true)
-    elsif "#{direction}_turn" == @lights.right_turn.name
-      @lights.change_lamps_state(@lights.right_turn, state: true)
+      @lights.change_lamps_state(lights.left_turn, should_be_turned_on: true)
+    elsif "#{direction}_turn" == lights.right_turn.name
+      @lights.change_lamps_state(lights.right_turn, should_be_turned_on: true)
     else
       raise WrongDirectionError, 'You can turn left or right only!'
     end
@@ -62,12 +62,12 @@ class Car
     if @lights.emergency_lights_turned_on?
       raise CaseOfEmergencyException, 'Warning! Hazard on the road. Do not turn emergency lights off!'
     else
-      @lights.change_lamps_state(@lights.left_turn, @lights.right_turn, state: false)
+      @lights.change_lamps_state(lights.left_turn, lights.right_turn, should_be_turned_on: false)
     end
   end
 
   def hit_the_brakes(new_speed)
-    @lights.change_lamps_state(@lights.brake, state: true)
+    @lights.change_lamps_state(lights.brake, should_be_turned_on: true)
     @speed = new_speed
   end
 

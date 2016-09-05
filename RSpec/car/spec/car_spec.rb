@@ -3,32 +3,32 @@ require 'spec_helper'
 describe Car do
   describe '.new' do
     it 'creates new car with given name, brand, model and driver' do
-      jake = Person.new(name: 'Jake')
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+      
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       expect(peugeot207).to be_a_kind_of Car
     end
 
     it 'creates car with speed set to 0' do
-      jake = Person.new(name: 'Jake')
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+      
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       expect(peugeot207.speed).to eq 0
     end
 
     it 'creates car with a clutch not pressed' do
-      jake = Person.new(name: 'Jake')
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+      
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       expect(peugeot207.clutch).to eq false
     end
 
     it 'creates car with lights turned off' do
-      jake = Person.new(name: 'Jake')
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+      
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       expect(peugeot207.lights.show_lamps_state.all?{|state| state == false}).to eq true
     end
   end
 
   describe '#start_engine' do
-    let(:peugeot207) { Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake = Person.new(name: 'Jake')) }
+    let(:peugeot207) { Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))}
 
     context 'clutch is pressed' do
       before { peugeot207.clutch = true }
@@ -57,27 +57,24 @@ describe Car do
 
   describe '#stop_engine' do
     it 'sets speed to 0' do
-      jake = Person.new(name: 'Jake')
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       peugeot207.stop_engine
       expect(peugeot207.speed).to eq 0
     end
 
     context 'it is not the case of emergency' do
       it 'turns the lights off' do
-        jake = Person.new(name: 'Jake')
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
         peugeot207.lights.head.is_turned_on = true
         peugeot207.stop_engine
-        peugeot207.lights.change_lamps_state(:all, state: false)
+        peugeot207.lights.change_lamps_state(:all, should_be_turned_on: false)
         expect(peugeot207.lights.show_lamps_state.all?{|state| state == false}).to eq true
       end
     end
 
     context 'it is the case of emergency' do
       it 'turns the lights off excluding emergency lights' do
-        jake = Person.new(name: 'Jake')
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
         peugeot207.lights.left_turn.is_turned_on = true
         peugeot207.lights.right_turn.is_turned_on = true
         peugeot207.stop_engine
@@ -92,15 +89,13 @@ describe Car do
 
   describe '#turn' do
     it 'turns the turn lamp on for given direction' do
-      jake = Person.new(name: 'Jake')
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       peugeot207.turn('right')
       expect(peugeot207.lights.right_turn.is_turned_on).to eq true
     end
 
     it 'turns on the turn lamp only if proper direction is given' do
-      jake = Person.new(name: 'Jake')
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       expect{
         peugeot207.turn('straight')
       }.to raise_error Car::WrongDirectionError, 'You can turn left or right only!'
@@ -110,8 +105,7 @@ describe Car do
   describe '#end_turn' do
     context 'it is not the case of emergency' do
       it 'turns the turn lights off' do
-        jake = Person.new(name: 'Jake')
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
         peugeot207.turn('right')
         peugeot207.end_turn
         expect(peugeot207.lights.left_turn.is_turned_on).to eq false
@@ -121,8 +115,7 @@ describe Car do
 
     context 'it is the case of emergency' do
       it 'it does not turn the turn lights off' do
-        jake = Person.new(name: 'Jake')
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
         peugeot207.lights.left_turn.is_turned_on = true
         peugeot207.lights.right_turn.is_turned_on = true
         expect{
@@ -134,8 +127,7 @@ describe Car do
 
   describe '#hit_the_brakes' do
     it 'turns the brake lights on' do
-      jake = Person.new(name: 'Jake')
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       peugeot207.lights.brake.is_turned_on = false
       peugeot207.speed = 120
       peugeot207.hit_the_brakes(30)
@@ -143,8 +135,7 @@ describe Car do
     end
 
     it 'sets speed to given value' do
-      jake = Person.new(name: 'Jake')
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       peugeot207.speed = 120
       peugeot207.hit_the_brakes(30)
       expect(peugeot207.speed).to eq 30
@@ -153,8 +144,7 @@ describe Car do
 
   describe '#release_brakes' do
     it 'turns the brake_lights off' do
-      jake = Person.new(name: 'Jake')
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       peugeot207.lights.brake.is_turned_on = true
       peugeot207.release_brakes
       expect(peugeot207.lights.brake.is_turned_on).to eq false
@@ -164,19 +154,15 @@ describe Car do
   describe '#send_notification' do
     context 'receiver does not require keywords' do
       it 'sends message without keywords' do
-        wayne = Person.new(name: 'Wayne')
-        jake = Person.new(name: 'Jake')
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
-        seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza', driver: wayne)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
+        seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza', driver: Person.new(name: 'Wayne'))
         peugeot207.send_notification(seat_ibiza, 'Do not break so unexpectedly')
         expect(seat_ibiza.received_message).to eq Notification.new(peugeot207, seat_ibiza, 'Do not break so unexpectedly.')
       end
 
       it 'sends message only when keywords are not required' do
-        wayne = Person.new(name: 'Wayne')
-        jake = Person.new(name: 'Jake')
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
-        seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza', driver: wayne, is_keyword_required: true)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
+        seat_ibiza = Car.new(name: 'Seat Ibiza', brand: 'Seat', model: 'Ibiza', driver: Person.new(name: 'Wayne'), is_keyword_required: true)
         expect{
           peugeot207.send_notification(seat_ibiza, 'Do not break so unexpectedly.')
         }.to raise_error Car::KeywordRequiredError, 'Keyword required. Sending aborted'
@@ -186,23 +172,20 @@ describe Car do
     context 'receiver requires keywords' do
       it 'sends message with keywords' do
         liberty = InsuranceCompany.new(name: 'Liberty Insurance')
-        jake = Person.new(name: 'Jake', insurance: liberty)
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake', insurance: liberty))
         expect(peugeot207.send_notification(liberty, 'Accident occured. Send car carrier', 'ACCIDENT')).to be_a_kind_of Notification
       end
 
       it 'sends message with accident pattern' do
         liberty = InsuranceCompany.new(name: 'Liberty Insurance')
-        jake = Person.new(name: 'Jake', insurance: liberty)
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake', insurance: liberty))
         peugeot207.send_notification(liberty, 'Accident occured. Send car carrier', liberty.notification_keywords[:accident])
         expect(liberty.received_message.message).to eq 'Accident occured. Send car carrier.ACCIDENT'
       end
 
       it 'sends message with other pattern' do
         liberty = InsuranceCompany.new(name: 'Liberty Insurance')
-        jake = Person.new(name: 'Jake', insurance: liberty)
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake', insurance: liberty))
         peugeot207.send_notification(liberty, 'Need new insurance', liberty.notification_keywords[:other])
         expect(liberty.received_message.message).to eq 'Need new insurance.OTHER'
       end
@@ -213,17 +196,15 @@ describe Car do
     context 'driver is insured' do
       it 'sends a message from Insurance Company, to the car driver' do
         liberty = InsuranceCompany.new(name: 'Liberty Insurance')
-        jake = Person.new(name: 'Jake', insurance: liberty)
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake', insurance: liberty))
         peugeot207.accident_occured
-        expect(jake.received_message).to eq Notification.new(liberty, jake, 'Your car had an accident. Do not worry, we are taking care already')
+        expect(peugeot207.driver.received_message).to eq Notification.new(liberty, peugeot207.driver, 'Your car had an accident. Do not worry, we are taking care already')
       end
     end
 
     context 'driver is not insured' do
       it 'sends message only if driver is insured' do
-        jake = Person.new(name: 'Jake')
-        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: jake)
+        peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
         expect{
           peugeot207.accident_occured
         }.to raise_error Car::NoInsuranceError, 'You do not have an insurance. Message sending aborted'

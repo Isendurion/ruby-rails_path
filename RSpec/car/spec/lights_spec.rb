@@ -2,17 +2,24 @@ require 'spec_helper'
 
 describe Lights do
 
-  describe '#change_lamps_state' do
-    it 'turns all lamps on,
-        when :all given as a parameter' do
+  describe '#show_lamps_state' do
+    it 'shows in an array are particular lamps turned on or off' do
       lights = Lights.new
-      lights.change_lamps_state(:all, state: true)
+      lights.change_lamps_state(lights.left_turn, lights.right_turn, should_be_turned_on: true)
+      expect(lights.show_lamps_state).to eq [false, false, false, true, true]
+    end
+  end
+
+  describe '#change_lamps_state' do
+    it 'turns all lamps on, when :all given as a parameter' do
+      lights = Lights.new
+      lights.change_lamps_state(:all, should_be_turned_on: true)
       expect(lights.show_lamps_state.all?{|state| state == true}).to eq true
     end
 
     it 'turns specific lamps off' do
       lights = Lights.new
-      lights.change_lamps_state(lights.tail, lights.brake, state: true)
+      lights.change_lamps_state(lights.tail, lights.brake, should_be_turned_on: true)
       expect(lights.tail.is_turned_on).to eq true
       expect(lights.brake.is_turned_on).to eq true
     end
