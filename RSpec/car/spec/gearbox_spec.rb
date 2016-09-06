@@ -13,13 +13,9 @@ describe Gearbox do
   describe '#shift_gear' do
     context 'clutch is pressed' do
       context 'speed is in range' do
-        it 'returns max speed in 60...90 range' do
+        it 'returns max speed in given range' do
           gearbox = Gearbox.new
           expect(gearbox.shift_gear(gear_range: 60...90, clutch_pressed: true, speed: 78)).to eq 89
-        end
-
-        it 'returns to max speed in 20...40 range' do
-          gearbox = Gearbox.new
           expect(gearbox.shift_gear(gear_range: 20...40, clutch_pressed: true, speed: 23)).to eq 39
         end
 

@@ -25,6 +25,7 @@ require_relative '../lib/insurance_company.rb'
 require_relative '../lib/notification'
 require_relative '../lib/gearbox'
 require_relative '../lib/lights'
+require_relative '../lib/lamp'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

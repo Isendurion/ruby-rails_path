@@ -23,7 +23,10 @@ describe Car do
     it 'creates car with lights turned off' do
       
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
-      expect(peugeot207.lights.show_lamps_state.all?{|state| state == false}).to eq true
+
+      allow(peugeot207.lights.tail).to receive(:switch)
+      peugeot207.stop_engine
+      expect(peugeot207.lights.tail).to have_received(:switch).with(state: false)
     end
   end
 
@@ -67,8 +70,7 @@ describe Car do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
         peugeot207.lights.head.is_turned_on = true
         peugeot207.stop_engine
-        peugeot207.lights.change_lamps_state(:all, should_be_turned_on: false)
-        expect(peugeot207.lights.show_lamps_state.all?{|state| state == false}).to eq true
+        expect(peugeot207.lights.head.is_turned_on).to eq false
       end
     end
 

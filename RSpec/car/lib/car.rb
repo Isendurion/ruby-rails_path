@@ -30,9 +30,9 @@ class Car
   end
 
   def start_engine
-    if @clutch
+    if clutch
       @speed = 0
-      @lights.head.change_lamp_state
+      @lights.head.switch(state: true)
     else
       raise ClutchNotPressedError, 'Clutch is not pressed'
     end
@@ -40,39 +40,48 @@ class Car
 
   def stop_engine
     @speed = 0
-    if @lights.emergency_lights_turned_on?
-      @lights.change_lamps_state(lights.head, lights.tail, lights.brake, should_be_turned_on: false)
-      @lights.change_lamps_state(lights.left_turn, lights.right_turn, should_be_turned_on: true)
+    if lights.emergency_lights_turned_on?
+      lights.head.switch(state: false)
+      lights.tail.switch(state: false)
+      lights.brake.switch(state: false)
+      lights.left_turn.switch(state: true)
+      lights.right_turn.switch(state: true)
     else
-      @lights.change_lamps_state(:all, should_be_turned_on: false)
+      lights.head.switch(state: false)
+      lights.tail.switch(state: false)
+      lights.brake.switch(state: false)
+      lights.left_turn.switch(state: false)
+      lights.right_turn.switch(state: false)
     end
   end
 
   def turn(direction)
-    if "#{direction}_turn" == @lights.left_turn.name
-      @lights.change_lamps_state(lights.left_turn, should_be_turned_on: true)
+
+    if "#{direction}_turn" == lights.left_turn.name
+      lights.left_turn.switch(state: true)
     elsif "#{direction}_turn" == lights.right_turn.name
-      @lights.change_lamps_state(lights.right_turn, should_be_turned_on: true)
+      lights.right_turn.switch(state: true)
     else
       raise WrongDirectionError, 'You can turn left or right only!'
     end
   end
 
   def end_turn
-    if @lights.emergency_lights_turned_on?
+    if lights.emergency_lights_turned_on?
       raise CaseOfEmergencyException, 'Warning! Hazard on the road. Do not turn emergency lights off!'
     else
-      @lights.change_lamps_state(lights.left_turn, lights.right_turn, should_be_turned_on: false)
+      lights.left_turn.switch(state: false)
+      lights.right_turn.switch(state: false)
     end
   end
 
   def hit_the_brakes(new_speed)
-    @lights.change_lamps_state(lights.brake, should_be_turned_on: true)
+    lights.brake.switch(state: true)
     @speed = new_speed
   end
 
   def release_brakes
-    @lights.brake.is_turned_on = false
+    lights.brake.switch(state: false)
   end
 
   def send_notification(recipient, message, keyword = '')
@@ -84,12 +93,12 @@ class Car
   end
 
   def accident_occured
-    if @driver.insurance != 'no insurance'
+    if driver.insurance != 'no insurance'
       recipient = @driver.insurance
       message = 'Accident occured. Send car carrier'
       keyword = @driver.insurance.notification_keywords[:accident]
       send_notification(recipient, message, keyword)
-      @driver.insurance.answer_message(@driver)
+      driver.insurance.answer_message(driver)
     else
       raise NoInsuranceError, 'You do not have an insurance. Message sending aborted'
     end

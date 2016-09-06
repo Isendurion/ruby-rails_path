@@ -16,10 +16,10 @@ class InsuranceCompany
   def answer_message(recipient)
     if @received_message == ''
       raise NoMessageReceivedError, 'No message received'
-    elsif @received_message.message.include?(@notification_keywords[:other])
+    elsif received_message.message.include?(notification_keywords[:other])
       message = 'Thank You for message. We will contact soon'
       recipient.received_message = Notification.new(self, recipient, message)
-    elsif @received_message.message.include?(@notification_keywords[:accident])
+    elsif received_message.message.include?(notification_keywords[:accident])
       message = 'Your car had an accident. Do not worry, we are taking care already'
       recipient.received_message = Notification.new(self, recipient, message)
     end
