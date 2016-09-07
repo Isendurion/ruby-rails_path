@@ -2,14 +2,6 @@ require 'spec_helper'
 
 describe Gearbox do
 
-  describe '#set_transmission' do
-    it 'sets transmission equal to the number of gears' do
-      gearbox = Gearbox.new
-      gearbox.set_transmission
-      expect(gearbox.transmission).to eq 5
-    end
-  end
-
   describe '#shift_gear' do
     context 'clutch is pressed' do
       context 'speed is in range' do

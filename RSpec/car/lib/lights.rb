@@ -1,5 +1,6 @@
 class Lights
-  attr_accessor :head, :tail, :brake, :left_turn, :right_turn
+
+  attr_accessor :head, :tail, :brake, :left_turn, :right_turn, :lamps
 
   def initialize(head: Lamp.new('head', false),
                  tail: Lamp.new('tail', false),
@@ -16,10 +17,18 @@ class Lights
   end
 
   def show_lamps_state
-    @lamps.map{|lamp| lamp.is_turned_on}
+    @lamps.map(&:is_turned_on)
   end
 
   def emergency_lights_turned_on?
     left_turn.is_turned_on && right_turn.is_turned_on
+  end
+
+  def turn_on_lamps!(*lamps)
+    lamps.each(&:turn_on!)
+  end
+
+  def turn_off_lamps!(*lamps)
+    lamps.each(&:turn_off!)
   end
 end

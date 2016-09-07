@@ -1,6 +1,6 @@
 module Present
   def show_car
-    puts "Name: #{self.name}\nBrand: #{self.brand}\nModel: #{self.model}\nTransmission: #{self.gearbox.set_transmission}-speed\n"
+    puts "Name: #{name}\nBrand: #{brand}\nModel: #{model}\nTransmission: #{gearbox.transmission}-speed\n"
   end
 end
 
@@ -32,7 +32,7 @@ class Car
   def start_engine
     if clutch
       @speed = 0
-      @lights.head.switch(state: true)
+      head_lamps.turn_on!
     else
       raise ClutchNotPressedError, 'Clutch is not pressed'
     end
@@ -41,26 +41,19 @@ class Car
   def stop_engine
     @speed = 0
     if lights.emergency_lights_turned_on?
-      lights.head.switch(state: false)
-      lights.tail.switch(state: false)
-      lights.brake.switch(state: false)
-      lights.left_turn.switch(state: true)
-      lights.right_turn.switch(state: true)
+      lights.turn_off_lamps!(head_lamps, tail_lamps, stop_lamps)
+      lights.turn_on_lamps!(left_indicator, right_indicator)
     else
-      lights.head.switch(state: false)
-      lights.tail.switch(state: false)
-      lights.brake.switch(state: false)
-      lights.left_turn.switch(state: false)
-      lights.right_turn.switch(state: false)
+      lights.turn_off_lamps!(head_lamps, tail_lamps, stop_lamps, left_indicator, right_indicator)
     end
   end
 
   def turn(direction)
 
-    if "#{direction}_turn" == lights.left_turn.name
-      lights.left_turn.switch(state: true)
-    elsif "#{direction}_turn" == lights.right_turn.name
-      lights.right_turn.switch(state: true)
+    if "#{direction}_turn" == left_indicator.name
+      left_indicator.turn_on!
+    elsif "#{direction}_turn" == right_indicator.name
+      right_indicator.turn_on!
     else
       raise WrongDirectionError, 'You can turn left or right only!'
     end
@@ -70,18 +63,17 @@ class Car
     if lights.emergency_lights_turned_on?
       raise CaseOfEmergencyException, 'Warning! Hazard on the road. Do not turn emergency lights off!'
     else
-      lights.left_turn.switch(state: false)
-      lights.right_turn.switch(state: false)
+      lights.turn_off_lamps!(left_indicator, right_indicator)
     end
   end
 
   def hit_the_brakes(new_speed)
-    lights.brake.switch(state: true)
+    stop_lamps.turn_on!
     @speed = new_speed
   end
 
   def release_brakes
-    lights.brake.switch(state: false)
+    stop_lamps.turn_off!
   end
 
   def send_notification(recipient, message, keyword = '')
@@ -102,5 +94,25 @@ class Car
     else
       raise NoInsuranceError, 'You do not have an insurance. Message sending aborted'
     end
+  end
+
+  def head_lamps
+    lights.head
+  end
+
+  def tail_lamps
+    lights.tail
+  end
+
+  def stop_lamps
+    lights.brake
+  end
+
+  def left_indicator
+    lights.left_turn
+  end
+
+  def right_indicator
+    lights.right_turn
   end
 end

@@ -230,16 +230,28 @@ Changes:
 -   added lamps array with all lamps in Lights class
 -   deleted all 'instance_variables' magic 
 
+----07.09----
+
+Changes:
+
+-   added turn_on!, turn_off! method with specs to the Lamp
+-   changed methods old names to those from previous point also in specs
+-   added head_lamps, tail_lamps, stop_lamps, left_indicator, right_indicator methods with specs to the Car
+-   changed methods old names to those from previous point also in specs
+-   Używaj takiej struktury: class Lamp < Struct.new(... - gotowe
+-   @lamps.map{|lamp| lamp.is_turned_on} -> lamps.each(&:is_turned_on)
+-   Mógłbyś zrobić tak, że jak są lampy, to przekazujesz idiki lamp,
+    które mają być wyłączone lub załączone, coś w stylu: lights.turn_on(:right_turn)
+    lub lights.turn_off(:head, :tail, :brake) - gotowe
+-   added spec to show_car method
+-   number_of_gears = gears.to_h.size -> mógłbyś dodać takie property w klasie Gears,
+    która zwróci Ci liczbę gears, bez konwertowania tego do hasha i sprawdzania długości
+    deleted const and number_of_gears, added transmission as a parameter with default 5
+-   added WorkWithFile class
+-   added method export to WorkWithFile class with specs
 
 
 
 TODO:
-
--   peugeot207.lights.head.is_turned_on = true -> takie wycieczki po obiektach są nazywane "train wrecks" ->
-    przemodeluj to tak, aby odwołać się maksymalnie do pierwszego obiektu dostępnego dla peugeot np:
-    peugeot207.head_light.turn_off! - możesz użyć delegacji, metod, które ukryją takie wycieczki
-
--   number_of_gears = gears.to_h.size -> mógłbyś dodać takie property w klasie Gears,
-    która zwróci Ci liczbę gears, bez konwertowania tego do hasha i sprawdzania długości
     
--   dodaj klase, która zapisuje konfig samochodu do pliku i może ladować ileś samochodów z pliku tekstowego
+-   metoda, która może ladować ileś samochodów z pliku tekstowego
