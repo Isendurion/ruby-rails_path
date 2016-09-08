@@ -1,4 +1,5 @@
 class Person
+
   attr_accessor :name, :insurance, :received_message
   attr_reader :id
 

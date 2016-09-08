@@ -6,6 +6,13 @@ end
 
 class Car
   include(Present)
+  extend Forwardable
+
+  def_delegators :lights, :head, :tail, :brake, :left_indicator, :right_indicator
+  def_delegator :lights, :head, :head_lamps
+  def_delegator :lights, :tail, :tail_lamps
+  def_delegator :lights, :brake, :stop_lamps
+  def_delegator :driver, :name, :driver_name
 
   ClutchNotPressedError = Class.new(StandardError)
   CaseOfEmergencyException = Class.new(StandardError)
@@ -13,7 +20,7 @@ class Car
   KeywordRequiredError = Class.new(StandardError)
   WrongDirectionError = Class.new(StandardError)
 
-  attr_accessor :speed, :gear, :clutch, :lights, :received_message, :name, :brand, :model, :gearbox, :driver
+  attr_accessor :speed, :clutch, :lights, :received_message, :name, :brand, :model, :gearbox, :driver
   attr_reader :is_keyword_required
 
   def initialize(name:, brand:, model:, driver:, is_keyword_required: false)
@@ -32,7 +39,8 @@ class Car
   def start_engine
     if clutch
       @speed = 0
-      head_lamps.turn_on!
+      # head_lamps.turn_on!
+      head.turn_on!
     else
       raise ClutchNotPressedError, 'Clutch is not pressed'
     end
@@ -42,7 +50,6 @@ class Car
     @speed = 0
     if lights.emergency_lights_turned_on?
       lights.turn_off_lamps!(head_lamps, tail_lamps, stop_lamps)
-      lights.turn_on_lamps!(left_indicator, right_indicator)
     else
       lights.turn_off_lamps!(head_lamps, tail_lamps, stop_lamps, left_indicator, right_indicator)
     end
@@ -50,9 +57,9 @@ class Car
 
   def turn(direction)
 
-    if "#{direction}_turn" == left_indicator.name
+    if "#{direction}_indicator" == left_indicator.name
       left_indicator.turn_on!
-    elsif "#{direction}_turn" == right_indicator.name
+    elsif "#{direction}_indicator" == right_indicator.name
       right_indicator.turn_on!
     else
       raise WrongDirectionError, 'You can turn left or right only!'
@@ -94,25 +101,5 @@ class Car
     else
       raise NoInsuranceError, 'You do not have an insurance. Message sending aborted'
     end
-  end
-
-  def head_lamps
-    lights.head
-  end
-
-  def tail_lamps
-    lights.tail
-  end
-
-  def stop_lamps
-    lights.brake
-  end
-
-  def left_indicator
-    lights.left_turn
-  end
-
-  def right_indicator
-    lights.right_turn
   end
 end

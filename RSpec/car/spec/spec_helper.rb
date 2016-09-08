@@ -18,6 +18,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'rspec'
 require 'ostruct'
+require 'forwardable'
 
 require_relative '../lib/car.rb'
 require_relative '../lib/person.rb'
@@ -26,7 +27,7 @@ require_relative '../lib/notification'
 require_relative '../lib/gearbox'
 require_relative '../lib/lights'
 require_relative '../lib/lamp'
-# require_relative '../lib/work_with_file'
+require_relative '../lib/car_data_file'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

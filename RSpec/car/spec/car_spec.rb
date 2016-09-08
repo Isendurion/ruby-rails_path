@@ -3,30 +3,25 @@ require 'spec_helper'
 describe Car do
   describe '.new' do
     it 'creates new car with given name, brand, model and driver' do
-      
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       expect(peugeot207).to be_a_kind_of Car
     end
 
     it 'creates car with speed set to 0' do
-      
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       expect(peugeot207.speed).to eq 0
     end
 
     it 'creates car with a clutch not pressed' do
-      
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       expect(peugeot207.clutch).to eq false
     end
 
     it 'creates car with lights turned off' do
-      
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
-
-      allow(peugeot207.tail_lamps).to receive(:switch)
+      allow(peugeot207.tail_lamps).to receive(:turn_off!)
       peugeot207.stop_engine
-      expect(peugeot207.tail_lamps).to have_received(:switch).with(state: false)
+      expect(peugeot207.tail_lamps).to have_received(:turn_off!)
     end
   end
 
@@ -77,9 +72,14 @@ describe Car do
     context 'it is not the case of emergency' do
       it 'turns the lights off' do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
-        peugeot207.head_lamps.is_turned_on = true
+        peugeot207.lights.turn_off_lamps!(peugeot207.left_indicator, peugeot207.right_indicator)
+        peugeot207.lights.turn_on_lamps!(peugeot207.head_lamps, peugeot207.tail_lamps, peugeot207.stop_lamps)
         peugeot207.stop_engine
         expect(peugeot207.head_lamps.is_turned_on).to eq false
+        expect(peugeot207.tail_lamps.is_turned_on).to eq false
+        expect(peugeot207.stop_lamps.is_turned_on).to eq false
+        expect(peugeot207.left_indicator.is_turned_on).to eq false
+        expect(peugeot207.right_indicator.is_turned_on).to eq false
       end
     end
 
@@ -99,13 +99,13 @@ describe Car do
   end
 
   describe '#turn' do
-    it 'turns the turn lamp on for given direction' do
+    it 'turns the indicator on for given direction' do
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       peugeot207.turn('right')
       expect(peugeot207.right_indicator.is_turned_on).to eq true
     end
 
-    it 'turns on the turn lamp only if proper direction is given' do
+    it 'turns on the indicator only if proper direction is given' do
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
       expect{
         peugeot207.turn('straight')
@@ -115,7 +115,7 @@ describe Car do
 
   describe '#end_turn' do
     context 'it is not the case of emergency' do
-      it 'turns the turn lights off' do
+      it 'turns indicators off' do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
         peugeot207.turn('right')
         peugeot207.end_turn
@@ -125,10 +125,10 @@ describe Car do
     end
 
     context 'it is the case of emergency' do
-      it 'it does not turn the turn lights off' do
+      it 'it does not turn indicators off' do
         peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
-        peugeot207.left_indicator.is_turned_on = true
-        peugeot207.right_indicator.is_turned_on = true
+        peugeot207.left_indicator.turn_on!
+        peugeot207.right_indicator.turn_on!
         expect{
           peugeot207.end_turn
         }.to raise_error Car::CaseOfEmergencyException, 'Warning! Hazard on the road. Do not turn emergency lights off!'
@@ -139,7 +139,7 @@ describe Car do
   describe '#hit_the_brakes' do
     it 'turns the brake lights on' do
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
-      peugeot207.stop_lamps.is_turned_on = false
+      peugeot207.stop_lamps.turn_off!
       peugeot207.speed = 120
       peugeot207.hit_the_brakes(30)
       expect(peugeot207.stop_lamps.is_turned_on).to eq true
@@ -156,7 +156,7 @@ describe Car do
   describe '#release_brakes' do
     it 'turns the brake_lights off' do
       peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
-      peugeot207.stop_lamps.is_turned_on = true
+      peugeot207.stop_lamps.turn_on!
       peugeot207.release_brakes
       expect(peugeot207.stop_lamps.is_turned_on).to eq false
     end
@@ -220,51 +220,6 @@ describe Car do
           peugeot207.accident_occured
         }.to raise_error Car::NoInsuranceError, 'You do not have an insurance. Message sending aborted'
       end
-    end
-  end
-
-  describe '#head_lamps' do
-    it 'sends head method to the lights' do
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
-      allow(peugeot207.lights).to receive(:head)
-      peugeot207.head_lamps
-      expect(peugeot207.lights).to have_received(:head)
-    end
-  end
-
-  describe '#tail_lamps' do
-    it 'sends head method to the lights' do
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
-      allow(peugeot207.lights).to receive(:tail)
-      peugeot207.tail_lamps
-      expect(peugeot207.lights).to have_received(:tail)
-    end
-  end
-
-  describe '#stop_lamps' do
-    it 'sends head method to the lights' do
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
-      allow(peugeot207.lights).to receive(:brake)
-      peugeot207.stop_lamps
-      expect(peugeot207.lights).to have_received(:brake)
-    end
-  end
-
-  describe '#left_indicator' do
-    it 'sends left_turn method to the lights' do
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
-      allow(peugeot207.lights).to receive(:left_turn)
-      peugeot207.left_indicator
-      expect(peugeot207.lights).to have_received(:left_turn)
-    end
-  end
-
-  describe '#right_indicator' do
-    it 'sends left_turn method to the lights' do
-      peugeot207 = Car.new(name: 'Peugeot 207', brand: 'Peugeot', model: '207', driver: Person.new(name: 'Jake'))
-      allow(peugeot207.lights).to receive(:right_turn)
-      peugeot207.right_indicator
-      expect(peugeot207.lights).to have_received(:right_turn)
     end
   end
 end

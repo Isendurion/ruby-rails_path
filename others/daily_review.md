@@ -250,8 +250,28 @@ Changes:
 -   added WorkWithFile class
 -   added method export to WorkWithFile class with specs
 
+----08.09----
+
+Changes:
+
+-   deleted switch, gave turn_on/off! instead
+-   deleted additional, unnesessary do-end block in Lamp class
+-   W metodzie show_lamps_state usunąłem @
+-   changed name WorkWithFile -> CarDataFile
+-   changed name left/right_turn -> left_right_indicator
+-   w CarDataFile plik jest nadpisywany
+-   removed trainwrecks from Gearbox, Lamp class and specs
+-   checked for mistakes in descriptions and code
+-   WorkWithFile - dodany konstruktor
+-   def delegator used to lamps, driver in Car, Gearbox and InsuranceCompany class
+-   metoda, która może ladować ileś samochodów z pliku tekstowego - done for one car
+
+
 
 
 TODO:
+
+-   stop_engine: lights spec stubbing
+    end_turn: indicators spec stubbing
+    shift_gear: spec stubbing
     
--   metoda, która może ladować ileś samochodów z pliku tekstowego

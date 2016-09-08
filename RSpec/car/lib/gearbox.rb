@@ -1,4 +1,13 @@
 class Gearbox
+extend Forwardable
+
+def_delegator :gears, :neutral, :neutral_gear
+def_delegator :gears, :reverse, :reverse_gear
+def_delegator :gears, :one, :gear_one
+def_delegator :gears, :two, :gear_two
+def_delegator :gears, :three, :gear_three
+def_delegator :gears, :four, :gear_four
+def_delegator :gears, :five, :gear_five
 
   IncorrectSpeedException = Class.new(StandardError)
 
@@ -28,12 +37,12 @@ class Gearbox
   end
 
   def shift_neutral_gear
-    @gear = @gears.neutral
+    @gear = neutral_gear
   end
 
   def shift_reverse_gear(speed)
     if speed == 0
-      @gear = @gears.reverse
+      @gear = reverse_gear
     else
       raise IncorrectSpeedException, 'Incorrect speed to reverse. Stop the car first'
     end

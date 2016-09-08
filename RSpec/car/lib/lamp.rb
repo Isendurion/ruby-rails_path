@@ -1,16 +1,10 @@
-class Lamp < Struct.new(:name, :is_turned_on) do
+class Lamp < Struct.new(:name, :is_turned_on)
   def turn_off!
-    switch(state: false)
+    self.is_turned_on = false
   end
 
   def turn_on!
-    switch(state: true)
+    self.is_turned_on = true
   end
-
-  private
-  def switch(state:)
-    self.is_turned_on = state
-  end
-end
 end
 
