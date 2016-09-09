@@ -39,8 +39,7 @@ class Car
   def start_engine
     if clutch
       @speed = 0
-      # head_lamps.turn_on!
-      head.turn_on!
+      head_lamps.turn_on!
     else
       raise ClutchNotPressedError, 'Clutch is not pressed'
     end
@@ -56,7 +55,6 @@ class Car
   end
 
   def turn(direction)
-
     if "#{direction}_indicator" == left_indicator.name
       left_indicator.turn_on!
     elsif "#{direction}_indicator" == right_indicator.name

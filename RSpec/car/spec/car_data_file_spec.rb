@@ -26,19 +26,19 @@ describe CarDataFile do
   end
 
   describe '#import' do
-    it 'makes new car' do
+    it 'makes new Car instance' do
       car_data_file = CarDataFile.new('')
-      car_data_file.import('Seat_Ibiza.txt')
+      car_data_file.import('list_of_cars.txt')
       expect(car_data_file.car).to be_a_kind_of Car
     end
 
     it 'sets car parameters from the file' do
       car_data_file = CarDataFile.new('')
-      car_data_file.import('Seat_Ibiza.txt')
-      expect(car_data_file.car_name).to eq 'Seat Ibiza'
-      expect(car_data_file.car_brand).to eq 'Seat'
-      expect(car_data_file.car_model).to eq 'Ibiza'
-      expect(car_data_file.car_driver_name).to eq 'Gregory'
+      car_data_file.import('list_of_cars.txt')
+      expect(car_data_file.imported_cars[0].name).to eq 'Seat Ibiza'
+      expect(car_data_file.imported_cars[0].brand).to eq 'Seat'
+      expect(car_data_file.imported_cars[0].model).to eq 'Ibiza'
+      expect(car_data_file.imported_cars[0].driver_name).to eq 'Gregory'
     end
   end
 end

@@ -266,12 +266,19 @@ Changes:
 -   def delegator used to lamps, driver in Car, Gearbox and InsuranceCompany class
 -   metoda, która może ladować ileś samochodów z pliku tekstowego - done for one car
 
+----09.09----
 
+Review:
 
+-   started Rails guide from http://guides.rubyonrails.org/getting_started.html
+-   created rails new project
+-   created form, model
+-   run a migration
+-   downloaded DB Browser for SQLite to see how database changes after creating new articles
+
+Changes:
+
+-   added feature to load more cars from the file
 
 TODO:
-
--   stop_engine: lights spec stubbing
-    end_turn: indicators spec stubbing
-    shift_gear: spec stubbing
     
